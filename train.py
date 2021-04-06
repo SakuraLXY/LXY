@@ -31,7 +31,7 @@ def get_labeled_data(picklename):
         data = pickle.load(open('{}.pickle'.format(picklename),'rb'))
     else:
         # Open the images with gzip in read binary mode
-        images = open(MNIST_data_path + 'train-images.idx3-ubyte','rb')
+        images = open(MNIST_data_path + 'train-images-idx3-ubyte','rb')
         labels = open(MNIST_data_path + 'train-labels.idx1-ubyte','rb')
         # Get metadata for images
         images.read(4)  # skip the magic_number #跳过了MNIST数据集的魔法数字的四个字节
