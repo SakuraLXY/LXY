@@ -1,37 +1,48 @@
 #from pyNN.nest import *
 #import pyNN.nest as sim
+from pyNN.utility import get_simulator, init_logging, normalized_filename
 import numpy as np
 import matplotlib.cm as cmap
+import matplotlib.pyplot as plt
 import time
 import os.path
 import scipy
 import pickle
 from struct import unpack
 from pyNN.random import RandomDistribution
-from pyNN.utility import get_simulator, init_logging, normalized_filename
+from pyNN.parameters import Sequence
 from pyNN.utility.plotting import DataTable
-
-sim, options = get_simulator(("--plot-figure", "Plot the simulation results to a file", {"action": "store_true"}),
-                             ("--fit-curve", "Calculate the best-fit curve to the weight-delta_t measurements", {"action": "store_true"}),
-                             ("--dendritic-delay-fraction", "What fraction of the total transmission delay is due to dendritic propagation", {"default": 1}),
-                             ("--debug", "Print debugging information"))
+import gzip
+import matplotlib.pyplot as plt
 
 # specify the location of the MNIST data
 MNIST_data_path = ''
+sim, options = get_simulator()
 
 #------------------------------------------------------------------------------
 # functions
 #------------------------------------------------------------------------------
 #读取数据
 def get_labeled_data(picklename):
-    """Read input-vector (image) and target class (label, 0-9) and return
-       it as list of tuples.
-    """
+    # Read input-vector (image) and target class (label, 0-9) and return
+    # it as list of tuples.
+    
     if os.path.isfile('%s.pickle' % picklename):
         data = pickle.load(open('{}.pickle'.format(picklename),'rb'))
     else:
+        #un_gz
+        # file_name = 'train-images-idx3-ubyte.gz'
+        # f_name = file_name.replace(".gz", "")
+        # g_file = gzip.GzipFile(file_name)
+        # open(f_name, "wb+").write(g_file.read())
+        # g_file.close()
+        # file_name = 'train-labels-idx1-ubyte.gz'
+        # f_name = file_name.replace(".gz", "")
+        # g_file = gzip.GzipFile(file_name)
+        # open(f_name, "wb+").write(g_file.read())
+        # g_file.close()
         # Open the images with gzip in read binary mode
-        images = open(MNIST_data_path + 'train-images-idx3-ubyte','rb')
+        images = open(MNIST_data_path + 'train-images.idx3-ubyte','rb')
         labels = open(MNIST_data_path + 'train-labels.idx1-ubyte','rb')
         # Get metadata for images
         images.read(4)  # skip the magic_number #跳过了MNIST数据集的魔法数字的四个字节
@@ -86,8 +97,10 @@ def save_connections(ending = ''):
     print('save connections')
     for connName in save_conns: #save_conns = 'XeAe'
         conn = connections[connName]
-        connListSparse = zip(conn.i, conn.j, conn.w)
-        np.save(data_path + 'weights/' + connName + ending, connListSparse)
+        # connListSparse = zip(conn.i, conn.j, conn.w)####
+        connListSparse = conn.get('weight', format='array')
+        np.save(data_path + connName + ending, connListSparse)
+              
 
 #存储theta值
 def save_theta(ending = ''):
@@ -95,7 +108,58 @@ def save_theta(ending = ''):
     for pop_name in population_names:
         np.save(data_path + 'weights/theta_' + pop_name + ending, neuron_groups[pop_name + 'e'].theta)
 
+#权重矩阵重排列
+def get_2d_input_weights():
+    name = 'XeAe'
+    weight_matrix = np.zeros((n_input, n_e)) #784*100
+    n_e_sqrt = int(np.sqrt(n_e)) #n_e的平方根
+    n_in_sqrt = int(np.sqrt(n_input)) #n_input的平方根
+    num_values_col = n_e_sqrt*n_in_sqrt #平方根相乘
+    num_values_row = num_values_col
+    rearranged_weights = np.zeros((num_values_col, num_values_row)) #重排列的权重矩阵
+    connMatrix = np.zeros((n_input, n_e)) #连接矩阵
+    connMatrix = connections[name].get('weight', format='array')
+    weight_matrix = np.copy(connMatrix)
 
+    for i in range(n_e_sqrt):
+        for j in range(n_e_sqrt):
+                rearranged_weights[i*n_in_sqrt : (i+1)*n_in_sqrt, j*n_in_sqrt : (j+1)*n_in_sqrt] = \
+                    weight_matrix[:, i + j*n_e_sqrt].reshape((n_in_sqrt, n_in_sqrt))
+    # #test
+    # print(weight_matrix)
+    # print(rearranged_weights)
+    return rearranged_weights
+
+#画出输入权重的图##有点复杂
+# def plot_2d_input_weights():
+#     name = 'XeAe'
+#     weights = get_2d_input_weights()
+#     plt.figure(fig_num, figsize=(18, 18))
+#     im2 = 
+#     return im2, fig
+
+def get_recognized_number_ranking(assignments, spike_rates):
+    summed_rates = [0] * 10
+    num_assignments = [0] * 10
+    for i in range(10):
+        num_assignments[i] = len(np.where(assignments == i)[0])
+        if num_assignments[i] > 0:
+            summed_rates[i] = np.sum(spike_rates[assignments == i]) / num_assignments[i]
+    return np.argsort(summed_rates)[::-1]
+
+def get_new_assignments(result_monitor, input_numbers):
+    assignments = np.zeros(n_e)
+    input_nums = np.asarray(input_numbers)
+    maximum_rate = [0] * n_e
+    for j in range(10):
+        num_assignments = len(np.where(input_nums == j)[0])
+        if num_assignments > 0:
+            rate = np.sum(result_monitor[input_nums == j], axis = 0) / num_assignments
+        for i in range(n_e):
+            if rate[i] > maximum_rate[i]:
+                maximum_rate[i] = rate[i]
+                assignments[i] = j
+    return assignments
     
 
 sim.setup()
@@ -120,11 +184,11 @@ num_examples = 1000 #使用训练例子的数量
 
 ending = ''
 n_input = 784 #输入层，即28*28
-n_e = 10 #兴奋层
+n_e = 100 #兴奋层
 n_i = n_e #抑制层
 
 #运行时间
-single_example_time =   350 #ms
+single_example_time = 350 #ms
 resting_time = 150
 runtime = num_examples * (single_example_time + resting_time)
 #时间间隔，之后改
@@ -141,21 +205,53 @@ runtime = num_examples * (single_example_time + resting_time)
 #     update_interval = 10000
 weight_update_interval = 20
 save_connections_interval = 1000
-update_interval = 1000
+update_interval = 200
 
 e_params = {'v_rest'     : -65.0,
-            'tau_refrac' : 5.0, 
+            'tau_refrac' : 5.0,      #不应期
             'v_thresh'   : -52.0, 
             'v_reset'    : -65.0, 
+            'tau_syn_E'  : 1.0,
+            'tau_syn_I'  : 2.0,
+            'e_rev_I'    : -100.0,
+            'a'          : 0.001e3,
+            'b'          :0.005,
 }
 
 i_params = {'v_rest'     : -60.0,
             'tau_refrac' : 2.0, 
             'v_thresh'   : -40.0, 
             'v_reset'    : -45.0, 
+            'tau_syn_E'  : 1.0,
+            'tau_syn_I'  : 2.0,
+            'e_rev_I'    : -85.0,
+            'a'          : 0.001e3,
+            'b'          :0.005,
 }
+
+# e_params = {'v_rest'     : -65.0,
+#             'tau_refrac' : 5.0,      #不应期
+#             'v_thresh'   : -52.0, 
+#             'v_reset'    : -65.0, 
+
+# }
+
+# i_params = {'v_rest'     : -60.0,
+#             'tau_refrac' : 2.0, 
+#             'v_thresh'   : -40.0, 
+#             'v_reset'    : -45.0, 
+# }
 V_INIT_E = -25.0
 V_INIT_I = -20.0
+
+ #STDP，需要修改
+#使用STDP学习从输入神经元到兴奋性神经元的所有突触
+stdp = sim.STDPMechanism(
+            weight=0.02,  # this is the initial value of the weight
+            delay="0.2 + 0.01*d",
+            timing_dependence=sim.SpikePairRule(tau_plus=20.0, tau_minus=20.0,
+                                            A_plus=0.01, A_minus=0.012),
+            weight_dependence=sim.AdditiveWeightDependence(w_min=0, w_max=1.0))
 
 weight = {}
 delay = {}
@@ -171,9 +267,15 @@ delay['ei_input'] = (0,5)
 input_intensity = 2.
 start_input_intensity = input_intensity
 
+fig_num = 1 #图片的序号
 neuron_groups = {}
-connections = {}
 input_groups = {}
+connections = {}
+rate_monitors = {}
+spike_monitors = {}
+spike_counters = {}
+result_monitor = np.zeros((update_interval,n_e))
+
 
 
 print('1')
@@ -184,8 +286,10 @@ print('1')
 for subgroup_n, name in enumerate(population_names):
     print('create neuron group', name)
 
-    neuron_groups[name+'e'] = sim.Population(n_e, IF_cond_exp, cellparams=e_params, initial_values={'v': V_INIT_E}, label = 'Ae')
-    neuron_groups[name+'i'] = sim.Population(n_i, IF_cond_exp, cellparams=i_params, initial_values={'v': V_INIT_I}, label = 'Ai')
+    neuron_groups[name+'e'] = sim.Population(n_e, sim.EIF_cond_alpha_isfa_ista, cellparams=e_params, initial_values={'v': V_INIT_E}, label = 'Ae')
+    neuron_groups[name+'i'] = sim.Population(n_i, sim.EIF_cond_alpha_isfa_ista, cellparams=i_params, initial_values={'v': V_INIT_I}, label = 'Ai')
+
+    #这里缺失给神经元设立theta值
 
     print('create recurrent connections')
     #connector_AeAi = get_matrix_from_file(weight_path + '../random/' + 'AeAi' + ending + '.npy')
@@ -203,7 +307,11 @@ for subgroup_n, name in enumerate(population_names):
     connections['AeAi'].set(weight = 10.4)
     connections['AiAe'].set(weight = connect_AiAe)
     #print(connections['AiAe'].get('weight',format = 'array'))
-    #print('create monitors for', name)
+    print('create monitors for', name)
+    #峰值计数 'Ae' & 'Ai'
+    neuron_groups['Ae'].record('spikes')
+    neuron_groups['Ai'].record('spikes')
+    
 
   
 #------------------------------------------------------------------------------
@@ -214,19 +322,11 @@ pop_values = [0,0,0]
 
 for i,name in enumerate(input_population_names):#['X']
     #参数可调整
-    input_groups[name+'e'] = sim.Population(n_input, SpikeSourcePoisson, 
+    input_groups[name+'e'] = sim.Population(n_input, sim.SpikeSourcePoisson, 
                                             cellparams={'start':0.0, 'rate':0., 'duration':1000.0}, label = 'Xe')
 
 for name in input_connection_names:
     print ('create connections between', name[0], 'and', name[1])
-    #STDP，需要修改
-    #使用STDP学习从输入神经元到兴奋性神经元的所有突触
-    stdp = STDPMechanism(
-                weight=0.02,  # this is the initial value of the weight
-                delay="0.2 + 0.01*d",
-                timing_dependence=SpikePairRule(tau_plus=20.0, tau_minus=20.0,
-                                                A_plus=0.01, A_minus=0.012),
-                weight_dependence=AdditiveWeightDependence(w_min=0, w_max=0.04))
 
     connections['XeAe'] = sim.Projection(input_groups['Xe'], neuron_groups['Ae'],
                                          sim.AllToAllConnector(allow_self_connections=False), stdp)
@@ -242,30 +342,74 @@ for name in input_connection_names:
 # run the simulation and set inputs
 #------------------------------------------------------------------------------
 
-previous_spike_count = np.zeros(n_e)
+#previous_spike_count = np.zeros(n_e)
+previous_spike_count = 0
 assignments = np.zeros(n_e)
 input_numbers = [0] * num_examples
 outputNumbers = np.zeros((num_examples, 10))
 
+sim.run(0)
 j = 0
 while j < (int(num_examples)):
-    ##这里有一行把权重规范化
+#while j < 10:
+    ##这里有一行把权重正则化
     print(j)
     spike_rates = training['x'][j%60000,:,:].reshape((n_input)) / 8. *  input_intensity
-    input_groups['Xe'].rate = spike_rates
-    sim.run(single_example_time)
 
-    # if j % update_interval == 0 and j > 0:
-
-    # if j % weight_update_interval == 0
-
-    # if j % save_connections_interval == 0 and j > 0
-
-
-
-#------------------------------------------------------------------------------
-# test
-#------------------------------------------------------------------------------
-
-
+    input_groups['Xe'].rate = spike_rates ##输入神经元的激发率
+    sim.run(single_example_time) ##运行
     
+    #更新assignment
+    if j % update_interval == 0 and j > 0:
+        assignments = get_new_assignments(result_monitor[:], input_numbers[j-update_interval : j])
+    # if j % weight_update_interval == 0 ## 20
+        #更新2d权重图
+    #保存结果
+    if j % save_connections_interval == 0 and j > 0:
+        save_connections(str(j))
+        ##save_theta(str(j)) ##
+
+
+    #当前峰值计数,如果峰值小于5，增大强度， 把rate设为0，然后重新展示图片
+    spike_counters['Ae'] = neuron_groups['Ae'].get_data().segments[0].spiketrains
+    count = sum(len(a) for a in spike_counters['Ae'])#len(a)的意思是在运行时间内发生了多少次峰值
+    current_spike_count =  count - previous_spike_count
+    previous_spike_count = count
+    print(count)
+    if current_spike_count < 5:
+        input_intensity += 1
+        for i,name in enumerate(input_population_names):#'X'
+            input_groups['Xe'].rate = 0 ##
+        sim.run(resting_time)
+    else:
+        result_monitor[j%update_interval,:] = current_spike_count
+        input_numbers[j] = training['y'][j%60000][0] ###
+        outputNumbers[j,:] = get_recognized_number_ranking(assignments, result_monitor[j%update_interval,:])
+        if j % 100 == 0 and j > 0:#每完成训练100个给出提示
+            print ('runs done:', j, 'of', int(num_examples))
+        # if j % update_interval == 0 and j > 0:
+        #     if do_plot_performance:
+        #         unused, performance = update_performance_plot(performance_monitor, performance, j, fig_performance)
+        #         print ('Classification performance', performance[:(j/float(update_interval))+1])
+        for i,name in enumerate(input_population_names):#'X'
+            input_groups['Xe'].rate = 0 ##
+            input_intensity = start_input_intensity#重置强度
+            j += 1
+   
+
+#------------------------------------------------------------------------------
+# save results
+#------------------------------------------------------------------------------
+print ('save results')
+
+#save_theta()
+save_connections()
+
+print(outputNumbers)
+
+##test
+x = np.linspace(-10*np.pi, 10*np.pi, 100,endpoint=True)
+C =np.tan(x)/x
+plt.plot(x,C)
+#plt.plot(X,S)
+plt.show()
