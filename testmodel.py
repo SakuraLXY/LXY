@@ -1,5 +1,6 @@
-from pyNN.nest import *
-import pyNN.nest as sim
+#from pyNN.nest import *
+#import pyNN.nest as sim
+from pyNN.utility import get_simulator, init_logging, normalized_filename
 import numpy as np
 import matplotlib.cm as cmap
 import matplotlib.pyplot as plt
@@ -9,10 +10,13 @@ import scipy
 import pickle
 from struct import unpack
 from pyNN.random import RandomDistribution
+from pyNN.parameters import Sequence
+from pyNN.utility.plotting import DataTable
 import gzip
 
 # specify the location of the MNIST data
 MNIST_data_path = ''
+sim, options = get_simulator()
 
 #------------------------------------------------------------------------------
 # functions
@@ -185,8 +189,8 @@ result_monitor = np.zeros((update_interval,n_e))
 #------------------------------------------------------------------------------
 for subgroup_n, name in enumerate(population_names):
     print('create neuron group', name)
-    neuron_groups[name+'e'] = sim.Population(n_e, EIF_cond_alpha_isfa_ista, cellparams=e_params, initial_values={'v': V_INIT_E}, label = 'Ae')
-    neuron_groups[name+'i'] = sim.Population(n_i, EIF_cond_alpha_isfa_ista, cellparams=i_params, initial_values={'v': V_INIT_I}, label = 'Ai')
+    neuron_groups[name+'e'] = sim.Population(n_e, sim.EIF_cond_alpha_isfa_ista, cellparams=e_params, initial_values={'v': V_INIT_E}, label = 'Ae')
+    neuron_groups[name+'i'] = sim.Population(n_i, sim.EIF_cond_alpha_isfa_ista, cellparams=i_params, initial_values={'v': V_INIT_I}, label = 'Ai')
 
     #这里需要读取theta值，'Ae'
 
@@ -212,19 +216,19 @@ pop_values = [0,0,0]
 
 for i,name in enumerate(input_population_names):#['X']
     #参数可调整
-    input_groups[name+'e'] = sim.Population(n_input, SpikeSourcePoisson, 
+    input_groups[name+'e'] = sim.Population(n_input, sim.SpikeSourcePoisson, 
                                             cellparams={'start':0.0, 'rate':0., 'duration':1000.0}, label = 'Xe')
 
 for name in input_connection_names:
     print ('create connections between', name[0], 'and', name[1])
     #STDP，需要修改
     #使用STDP学习从输入神经元到兴奋性神经元的所有突触
-    stdp = STDPMechanism(
+    stdp = sim.STDPMechanism(
                 weight=0.02,  # this is the initial value of the weight
                 delay="0.2 + 0.01*d",
-                timing_dependence=SpikePairRule(tau_plus=20.0, tau_minus=20.0,
+                timing_dependence=sim.SpikePairRule(tau_plus=20.0, tau_minus=20.0,
                                                 A_plus=0.01, A_minus=0.012),
-                weight_dependence=AdditiveWeightDependence(w_min=0, w_max=0.04))
+                weight_dependence=sim.AdditiveWeightDependence(w_min=0, w_max=0.04))
 
     connections['XeAe'] = sim.Projection(input_groups['Xe'], neuron_groups['Ae'],
                                          sim.AllToAllConnector(allow_self_connections=False), stdp)
