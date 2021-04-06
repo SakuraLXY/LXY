@@ -13,6 +13,7 @@ from pyNN.random import RandomDistribution
 from pyNN.parameters import Sequence
 from pyNN.utility.plotting import DataTable
 import gzip
+import os
 
 # specify the location of the MNIST data
 MNIST_data_path = ''
