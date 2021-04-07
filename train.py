@@ -1,3 +1,4 @@
+#修改了细胞类型
 #from pyNN.nest import *
 #import pyNN.nest as sim
 from pyNN.utility import get_simulator, init_logging, normalized_filename
@@ -13,7 +14,6 @@ from pyNN.random import RandomDistribution
 from pyNN.parameters import Sequence
 from pyNN.utility.plotting import DataTable
 import gzip
-import matplotlib.pyplot as plt
 
 # specify the location of the MNIST data
 MNIST_data_path = ''
@@ -30,18 +30,6 @@ def get_labeled_data(picklename):
     if os.path.isfile('%s.pickle' % picklename):
         data = pickle.load(open('{}.pickle'.format(picklename),'rb'))
     else:
-        #un_gz
-        # file_name = 'train-images-idx3-ubyte.gz'
-        # f_name = file_name.replace(".gz", "")
-        # g_file = gzip.GzipFile(file_name)
-        # open(f_name, "wb+").write(g_file.read())
-        # g_file.close()
-        # file_name = 'train-labels-idx1-ubyte.gz'
-        # f_name = file_name.replace(".gz", "")
-        # g_file = gzip.GzipFile(file_name)
-        # open(f_name, "wb+").write(g_file.read())
-        # g_file.close()
-        # Open the images with gzip in read binary mode
         images = open(MNIST_data_path + 'train-images.idx3-ubyte','rb')
         labels = open(MNIST_data_path + 'train-labels.idx1-ubyte','rb')
         # Get metadata for images
@@ -207,40 +195,42 @@ weight_update_interval = 20
 save_connections_interval = 1000
 update_interval = 200
 
-e_params = {'v_rest'     : -65.0,
-            'tau_refrac' : 5.0,      #不应期
-            'v_thresh'   : -52.0, 
-            'v_reset'    : -65.0, 
-            'tau_syn_E'  : 1.0,
-            'tau_syn_I'  : 2.0,
-            'e_rev_I'    : -100.0,
-            'a'          : 0.001e3,
-            'b'          :0.005,
-}
-
-i_params = {'v_rest'     : -60.0,
-            'tau_refrac' : 2.0, 
-            'v_thresh'   : -40.0, 
-            'v_reset'    : -45.0, 
-            'tau_syn_E'  : 1.0,
-            'tau_syn_I'  : 2.0,
-            'e_rev_I'    : -85.0,
-            'a'          : 0.001e3,
-            'b'          :0.005,
-}
-
 # e_params = {'v_rest'     : -65.0,
 #             'tau_refrac' : 5.0,      #不应期
 #             'v_thresh'   : -52.0, 
 #             'v_reset'    : -65.0, 
-
+#             'tau_syn_E'  : 1.0,
+#             'tau_syn_I'  : 2.0,
+#             'e_rev_I'    : -100.0,
+#             'a'          : 0.001e3,
+#             'b'          :0.005,
 # }
 
 # i_params = {'v_rest'     : -60.0,
 #             'tau_refrac' : 2.0, 
 #             'v_thresh'   : -40.0, 
 #             'v_reset'    : -45.0, 
+#             'tau_syn_E'  : 1.0,
+#             'tau_syn_I'  : 2.0,
+#             'e_rev_I'    : -85.0,
+#             'a'          : 0.001e3,
+#             'b'          :0.005,
 # }
+
+e_params = {'v_rest'     : -65.0,
+            'tau_refrac' : 5.0,      #不应期
+            'v_thresh'   : -52.0, 
+            'v_reset'    : -65.0, 
+            'e_rev_I'    : -100.0,
+
+}
+
+i_params = {'v_rest'     : -60.0,
+            'tau_refrac' : 2.0, 
+            'v_thresh'   : -40.0, 
+            'v_reset'    : -45.0, 
+            'e_rev_I'    : -85.0,
+}
 V_INIT_E = -25.0
 V_INIT_I = -20.0
 
@@ -286,8 +276,8 @@ print('1')
 for subgroup_n, name in enumerate(population_names):
     print('create neuron group', name)
 
-    neuron_groups[name+'e'] = sim.Population(n_e, sim.EIF_cond_alpha_isfa_ista, cellparams=e_params, initial_values={'v': V_INIT_E}, label = 'Ae')
-    neuron_groups[name+'i'] = sim.Population(n_i, sim.EIF_cond_alpha_isfa_ista, cellparams=i_params, initial_values={'v': V_INIT_I}, label = 'Ai')
+    neuron_groups[name+'e'] = sim.Population(n_e, sim.IF_cond_exp, cellparams=e_params, initial_values={'v': V_INIT_E}, label = 'Ae')
+    neuron_groups[name+'i'] = sim.Population(n_i, sim.IF_cond_exp, cellparams=i_params, initial_values={'v': V_INIT_I}, label = 'Ai')
 
     #这里缺失给神经元设立theta值
 
@@ -406,10 +396,3 @@ print ('save results')
 save_connections()
 
 print(outputNumbers)
-
-##test
-x = np.linspace(-10*np.pi, 10*np.pi, 100,endpoint=True)
-C =np.tan(x)/x
-plt.plot(x,C)
-#plt.plot(X,S)
-plt.show()
