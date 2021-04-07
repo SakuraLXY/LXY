@@ -237,7 +237,7 @@ V_INIT_I = -20.0
  #STDP，需要修改
 #使用STDP学习从输入神经元到兴奋性神经元的所有突触
 stdp = sim.STDPMechanism(
-            weight=0.02,  # this is the initial value of the weight
+            weight=RandomDistribution('uniform', (0, 0.3)),  # this is the initial value of the weight
             delay="0.2 + 0.01*d",
             timing_dependence=sim.SpikePairRule(tau_plus=20.0, tau_minus=20.0,
                                             A_plus=0.01, A_minus=0.012),
@@ -290,12 +290,12 @@ for subgroup_n, name in enumerate(population_names):
     #print(connect_AiAe)
 
     connections['AeAi'] = sim.Projection(neuron_groups[name+'e'], neuron_groups[name+'i'],
-                                    sim.OneToOneConnector(), synapse_type = sim.StaticSynapse(weight=0.04, delay=0.5))
+                                    sim.OneToOneConnector(), synapse_type = sim.StaticSynapse(weight=10.4, delay=0.5))
     connections['AiAe'] = sim.Projection(neuron_groups[name+'i'], neuron_groups[name+'e'],
-                                    sim.AllToAllConnector(allow_self_connections=False), synapse_type = sim.StaticSynapse(weight=0.04, delay=0.5))
+                                    sim.AllToAllConnector(allow_self_connections=False), synapse_type = sim.StaticSynapse(weight=connect_AiAe, delay=0.5))
 
-    connections['AeAi'].set(weight = 10.4)
-    connections['AiAe'].set(weight = connect_AiAe)
+    #connections['AeAi'].set(weight = 10.4)
+    #connections['AiAe'].set(weight = connect_AiAe)
     #print(connections['AiAe'].get('weight',format = 'array'))
     print('create monitors for', name)
     #峰值计数 'Ae' & 'Ai'
@@ -324,8 +324,8 @@ for name in input_connection_names:
     #随机初始权重和延迟
     #matrix_XeAe = np.load('random/../random1/XeAe.npy')
     #print('loading', matrix_XeAe.shape)
-    connections['XeAe'].set(weight = RandomDistribution('uniform', (0, 0.3)))
-    connections['XeAe'].set(delay = RandomDistribution('uniform', (1, 10)))
+    #connections['XeAe'].set(weight = RandomDistribution('uniform', (0, 0.3)))
+    #connections['XeAe'].set(delay = RandomDistribution('uniform', (1, 10)))
 
 
 #------------------------------------------------------------------------------
