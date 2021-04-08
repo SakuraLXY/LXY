@@ -318,8 +318,7 @@ for i,name in enumerate(input_population_names):#['X']
 for name in input_connection_names:
     print ('create connections between', name[0], 'and', name[1])
 
-    connections['XeAe'] = sim.Projection(input_groups['Xe'], neuron_groups['Ae'],
-                                         sim.AllToAllConnector(allow_self_connections=False), stdp)
+    connections['XeAe'] = sim.Projection(input_groups['Xe'], neuron_groups['Ae'], sim.AllToAllConnector(allow_self_connections=False), stdp)
 
     #随机初始权重和延迟
     #matrix_XeAe = np.load('random/../random1/XeAe.npy')
