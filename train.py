@@ -238,7 +238,7 @@ V_INIT_I = -20.0
 #使用STDP学习从输入神经元到兴奋性神经元的所有突触
 stdp = sim.STDPMechanism(
             weight=0.1,  # this is the initial value of the weight
-            delay="0.2 + 0.01*d",
+            delay=0.2,
             timing_dependence=sim.SpikePairRule(tau_plus=20.0, tau_minus=20.0,
                                             A_plus=0.01, A_minus=0.012),
             weight_dependence=sim.AdditiveWeightDependence(w_min=0, w_max=1.0))
