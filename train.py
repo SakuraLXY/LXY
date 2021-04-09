@@ -1,6 +1,7 @@
 #修改了细胞类型
 #from pyNN.nest import *
 #import pyNN.nest as sim
+import pyNN.spiNNaker as sim
 from pyNN.utility import get_simulator, init_logging, normalized_filename
 import numpy as np
 import matplotlib.cm as cmap
@@ -17,7 +18,7 @@ import gzip
 
 # specify the location of the MNIST data
 MNIST_data_path = ''
-sim, options = get_simulator()
+#sim, options = get_simulator()
 
 #------------------------------------------------------------------------------
 # functions
