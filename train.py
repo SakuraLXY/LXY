@@ -334,6 +334,9 @@ for name in input_connection_names:
 #------------------------------------------------------------------------------
 # run the simulation and set inputs
 #------------------------------------------------------------------------------
+#保存初始权重
+initWeight = connections['XeAe'].get('weight', format='array')
+np.save(data_path + 'initWeight' + ending, initWeight)
 
 #previous_spike_count = np.zeros(n_e)
 previous_spike_count = 0
