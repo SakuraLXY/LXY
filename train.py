@@ -293,7 +293,7 @@ for subgroup_n, name in enumerate(population_names):
     connections['AeAi'] = sim.Projection(neuron_groups[name+'e'], neuron_groups[name+'i'],
                                     sim.OneToOneConnector(), synapse_type = sim.StaticSynapse(weight=10.4, delay=0.5))
     connections['AiAe'] = sim.Projection(neuron_groups[name+'i'], neuron_groups[name+'e'],
-                                    sim.AllToAllConnector(allow_self_connections=False), synapse_type = sim.StaticSynapse(weight=connect_AiAe, delay=0.5))
+                                    sim.AllToAllConnector(allow_self_connections=False), synapse_type = sim.StaticSynapse(weight=17, delay=0.5))
 
     #connections['AeAi'].set(weight = 10.4)
     #connections['AiAe'].set(weight = connect_AiAe)
