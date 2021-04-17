@@ -349,13 +349,14 @@ initWeight = connections['XeAe'].get('weight', format='array')
 np.save(data_path + 'initWeight' + ending, initWeight)
 
 j = 0
-while j < 1000:
+while j < (int(num_examples)):
 #while j < 10:
     ##这里有一行把权重正则化
     print(j)
     spike_rates = training['x'][j%60000,:,:].reshape((n_input)) / 8. *  input_intensity
 
-    input_groups['Xe'].rate = spike_rates ##输入神经元的激发率
+    input_groups['Xe'].set(rate = spike_rates) ##输入神经元的激发率
+    print(input_groups['Xe'].get('rate'))
     sim.run(single_example_time) ##运行
     
     #更新assignment
@@ -378,7 +379,7 @@ while j < 1000:
     if current_spike_count < 5:
         input_intensity += 1
         for i,name in enumerate(input_population_names):#'X'
-            input_groups['Xe'].rate = 0 ##
+            input_groups['Xe'].set(rate = 0) = 0 ##
         sim.run(resting_time)
     else:
         result_monitor[j%update_interval,:] = current_spike_count
@@ -391,7 +392,7 @@ while j < 1000:
         #         unused, performance = update_performance_plot(performance_monitor, performance, j, fig_performance)
         #         print ('Classification performance', performance[:(j/float(update_interval))+1])
         for i,name in enumerate(input_population_names):#'X'
-            input_groups['Xe'].rate = 0 ##
+            input_groups['Xe'].set(rate = 0) ##
             input_intensity = start_input_intensity#重置强度
             j += 1
    
