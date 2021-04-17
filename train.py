@@ -379,7 +379,7 @@ while j < (int(num_examples)):
     if current_spike_count < 5:
         input_intensity += 1
         for i,name in enumerate(input_population_names):#'X'
-            input_groups['Xe'].set(rate = 0) = 0 ##
+            input_groups['Xe'].set(rate = 0)##
         sim.run(resting_time)
     else:
         result_monitor[j%update_interval,:] = current_spike_count
