@@ -349,7 +349,7 @@ initWeight = connections['XeAe'].get('weight', format='array')
 np.save(data_path + 'initWeight' + ending, initWeight)
 
 j = 0
-while j < (int(num_examples)):
+while j < 1000:
 #while j < 10:
     ##这里有一行把权重正则化
     print(j)
