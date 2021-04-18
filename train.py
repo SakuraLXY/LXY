@@ -356,7 +356,7 @@ while j < (int(num_examples)):
     spike_rates = training['x'][j%60000,:,:].reshape((n_input)) / 8. *  input_intensity
 
     input_groups['Xe'].set(rate = spike_rates) ##输入神经元的激发率
-    print(input_groups['Xe'].get('rate'))
+    #print(input_groups['Xe'].get('rate'))
     sim.run(single_example_time) ##运行
     
     #更新assignment
