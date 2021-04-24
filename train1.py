@@ -1,6 +1,7 @@
 ###重写一遍
 ##细胞类型是IF_cond_exp
 
+import pyNN.spiNNaker as sim
 from pyNN.utility import get_simulator, init_logging, normalized_filename
 import numpy as np
 import matplotlib.cm as cmap
@@ -18,7 +19,7 @@ from struct import unpack
 
 # specify the location of the MNIST data
 MNIST_data_path = ''
-sim, options = get_simulator()
+#sim, options = get_simulator()
 
 #------------------------------------------------------------------------------
 # functions
