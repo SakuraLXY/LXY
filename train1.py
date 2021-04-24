@@ -15,7 +15,6 @@ from pyNN.parameters import Sequence
 from pyNN.utility.plotting import DataTable
 from quantities import Hz, s, ms, mV
 from struct import unpack
-import pandas as pd
 
 # specify the location of the MNIST data
 MNIST_data_path = ''
