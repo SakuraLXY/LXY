@@ -305,8 +305,8 @@ connections_AiAe = sim.Projection(neuron_groups_Ai,
 
 print('create monitors for A')
 #峰值计数 'Ae' & 'Ai'
-neuron_groups_Ae.record(["spikes",'gsyn_exc', 'gsyn_inh','v'])
-neuron_groups_Ai.record(["spikes",'gsyn_exc', 'gsyn_inh','v'])
+neuron_groups_Ae.record("spikes")
+neuron_groups_Ai.record("spikes")
 
 #------------------------------------------------------------------------------
 # create input population and connections from input populations
