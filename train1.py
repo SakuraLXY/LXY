@@ -331,7 +331,7 @@ connections_XeAe = sim.Projection(input_groups_Xe,
 #------------------------------------------------------------------------------
 
 #保存初始权重
-sim.run(50)
+sim.run(0)
 initWeight = connections_XeAe.get('weight', format='array')
 np.save(data_path + 'initWeight' + ending, initWeight)
 
