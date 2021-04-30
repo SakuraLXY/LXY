@@ -349,6 +349,7 @@ outputNumbers = np.zeros((num_examples, 10))
 # np.save('initWeight', initWeight)
 
 sim.run(0)
+print('bb')
 print(connections_XeAe.get('weight',format = 'array'))
 j = 0
 # print(neuron_groups_Ae)
@@ -358,6 +359,8 @@ j = 0
 ####theta
 theta = np.zeros(n_e)
 print(theta.shape)
+
+print('cc')
 
 old_list = []
 while j < (int(num_examples)):
