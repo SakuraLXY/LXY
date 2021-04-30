@@ -226,7 +226,7 @@ weight_rule = sim.AdditiveWeightDependence(w_max=1.0,w_min=0)
 stdp = sim.STDPMechanism(timing_dependence=timing_rule,
                             weight_dependence=weight_rule,
                             #weight=RandomDistribution(distribution='normal_clipped',low=0,high=1, mu=0.5, sigma=0.3),
-                            weight=weight_XeAe,
+                            weight=1.0,
                             delay=RandomDistribution(distribution='uniform',low=1,high=10)
                             )
 
