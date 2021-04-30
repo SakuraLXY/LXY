@@ -347,7 +347,7 @@ outputNumbers = np.zeros((num_examples, 10))
 # normalize_weights()
 # initWeight = connections_XeAe.get('weight', format='array')
 # np.save('initWeight', initWeight)
-
+print('dd')
 sim.run(0)
 print('bb')
 print(connections_XeAe.get('weight',format = 'array'))
