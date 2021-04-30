@@ -330,7 +330,7 @@ connections_XeAe = sim.Projection(input_groups_Xe,
 #------------------------------------------------------------------------------
 
 #connections_XeAe.set(weight = weight_XeAe)
-print(connections_XeAe.get('weight',format = 'array'))
+
 
 
 #previous_spike_count = np.zeros(n_e)
@@ -347,6 +347,7 @@ outputNumbers = np.zeros((num_examples, 10))
 # np.save('initWeight', initWeight)
 
 sim.run(0)
+print(connections_XeAe.get('weight',format = 'array'))
 j = 0
 # print(neuron_groups_Ae)
 # print(neuron_groups_Ai)
