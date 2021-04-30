@@ -325,6 +325,8 @@ connections_XeAe = sim.Projection(input_groups_Xe,
                                 receptor_type = 'excitatory'
                                 )
 
+print('aa')
+
 #------------------------------------------------------------------------------
 # run the simulation and set inputs
 #------------------------------------------------------------------------------
