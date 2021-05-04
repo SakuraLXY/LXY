@@ -134,7 +134,7 @@ training = get_labeled_data(MNIST_data_path + 'training')
 end = time.time()
 print('time needed to load training set:', end - start)
 
-num_examples = 500 #使用训练例子的数量
+num_examples = 200 #使用训练例子的数量
 
 ending = ''
 n_input = 784 #输入层，即28*28
