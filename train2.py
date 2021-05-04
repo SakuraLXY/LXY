@@ -201,6 +201,8 @@ stdp = sim.STDPMechanism(timing_dependence=timing_rule,
 
 input_intensity = 2.
 start_input_intensity = input_intensity
+weight = {}
+delay = {}
 
 weight['ee_input'] = 78.
 
