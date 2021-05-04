@@ -293,13 +293,13 @@ for i in range(n_e):
 connections_AeAi = sim.Projection(neuron_groups_Ae, 
                                 neuron_groups_Ai,
                                 sim.OneToOneConnector(), 
-                                synapse_type = sim.StaticSynapse(weight=1, delay=1.0),
+                                synapse_type = sim.StaticSynapse(weight=10.4, delay=1.0),
                                 receptor_type = 'excitatory'
                                 )
 connections_AiAe = sim.Projection(neuron_groups_Ai, 
                                 neuron_groups_Ae,
                                 connector = sim.FromListConnector(connect_AiAe),
-                                synapse_type = sim.StaticSynapse(weight=0.0625, delay=1.0),
+                                synapse_type = sim.StaticSynapse(weight=17, delay=1.0),
                                 receptor_type = 'inhibitory'
                                 )
 
@@ -313,8 +313,7 @@ neuron_groups_Ai.record("spikes")
 #------------------------------------------------------------------------------
 
 input_groups_Xe = sim.Population(n_input, 
-                                sim.SpikeSourcePoisson, ######
-                                cellparams={'start':0.0, 'rate':0.}, 
+                                sim.SpikeSourcePoisson(rate = 0), 
                                 label = 'Xe')
 
 print ('create connections between X and A ')
@@ -342,6 +341,7 @@ outputNumbers = np.zeros((num_examples, 10))
 
 sim.run(0)
 j = 0
+old_list = []
 while j < (int(num_examples)):
     ##这里有一行把权重正则化
     print(j)
@@ -361,12 +361,30 @@ while j < (int(num_examples)):
         save_connections(str(j))
         ##save_theta(str(j)) ##
 
-
+    list1 = []
+    list2 = []
+    
     #当前峰值计数,如果峰值小于5，增大强度， 把rate设为0，然后重新展示图片
     spike_counters_Ae = neuron_groups_Ae.get_data().segments[0].spiketrains
     count = sum(len(a) for a in spike_counters_Ae)#len(a)的意思是在运行时间内发生了多少次峰值
     current_spike_count =  count - previous_spike_count
     previous_spike_count = count
+    
+    for a in spike_counters['Ae']:
+        list1.append(len(a))
+    
+    if j!=0:
+        list2=[list1[i] - old_list[i] for i in range(0,len(list1))]
+        result_monitor[j%update_interval,:] = list2
+        spikes = list2
+        print(list2)
+    else:
+        result_monitor[j%update_interval,:] = list1
+        spikes = list1
+        print(list1)
+
+    old_list=list1
+    
     print(count)
     if current_spike_count < 5:
         input_intensity += 1
@@ -383,10 +401,12 @@ while j < (int(num_examples)):
         #     if do_plot_performance:
         #         unused, performance = update_performance_plot(performance_monitor, performance, j, fig_performance)
         #         print ('Classification performance', performance[:(j/float(update_interval))+1])
-        for i,name in enumerate(input_population_names):#'X'
-            input_groups_Xe.set(rate = 0) ##
-            input_intensity = start_input_intensity#重置强度
-            j += 1
+        
+        input_groups_Xe.set(rate = 0) ##
+        
+        sim.run(resting_time)
+        input_intensity = start_input_intensity#重置强度
+        j += 1
 
 #------------------------------------------------------------------------------
 # save results
