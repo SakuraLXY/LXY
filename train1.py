@@ -180,7 +180,7 @@ n_e = 100 #兴奋层
 n_i = n_e #抑制层
 
 #运行时间
-single_example_time = 10 #ms
+single_example_time = 5 #ms
 resting_time = 150
 runtime = num_examples * (single_example_time + resting_time)
 
