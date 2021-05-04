@@ -172,7 +172,7 @@ np.random.seed(0) #使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 100 #使用训练例子的数量
+num_examples = 50 #使用训练例子的数量
 
 ending = ''
 n_input = 784 #输入层，即28*28
@@ -180,7 +180,7 @@ n_e = 100 #兴奋层
 n_i = n_e #抑制层
 
 #运行时间
-single_example_time = 5 #ms
+single_example_time = 10 #ms
 resting_time = 150
 runtime = num_examples * (single_example_time + resting_time)
 
