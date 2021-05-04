@@ -179,7 +179,7 @@ n_e = 100 #兴奋层
 n_i = n_e #抑制层
 
 #运行时间
-single_example_time = 350 #ms
+single_example_time = 50 #ms
 resting_time = 150
 runtime = num_examples * (single_example_time + resting_time)
 
@@ -345,7 +345,7 @@ j = 0
 while j < (int(num_examples)):
     ##这里有一行把权重正则化
     print(j)
-    spike_rates = training['x'][j%60000,:,:].reshape((n_input)) / 8. *  input_intensity
+    spike_rates = training['x'][j%60000,:,:].reshape((n_input)) / 64. *  input_intensity
 
     input_groups_Xe.set(rate = spike_rates) ##输入神经元的激发率
     #print(input_groups['Xe'].get('rate'))
