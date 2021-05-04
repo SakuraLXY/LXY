@@ -273,12 +273,15 @@ input_groups_Xe = sim.Population(n_input,
 
 print ('create connections between X and A ')
 
+print('aa')
 connections_XeAe = sim.Projection(input_groups_Xe, 
                                 neuron_groups_Ae,
                                 sim.AllToAllConnector(allow_self_connections=False), 
                                 stdp,
                                 receptor_type = 'excitatory'
                                 )
+
+print('bb')
 
 #------------------------------------------------------------------------------
 # run the simulation and set inputs
