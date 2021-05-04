@@ -84,13 +84,12 @@ def get_matrix_from_file(fileName):
     return value_arr
 
 #保存连接
-def save_connections(ending = ''):
+def save_connections(ending=''):
     print('save connections')
-    for connName in save_conns: #save_conns = 'XeAe'
-        conn = connections[connName]
-        # connListSparse = zip(conn.i, conn.j, conn.w)####
-        connListSparse = conn.get('weight', format='array')
-        np.save(data_path + connName + ending, connListSparse)
+    conn = connections_XeAe
+    # connListSparse = zip(conn.i, conn.j, conn.w)####
+    connListSparse = conn.get('weight', format='array')
+    np.save('XeAe' + ending, connListSparse)
               
 
 #存储theta值
