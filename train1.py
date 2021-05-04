@@ -153,7 +153,7 @@ def get_new_assignments(result_monitor, input_numbers):
     return assignments
 
 
-sim.setup()
+sim.setup(timestep=1,time_scale_factor=10)
 
 #------------------------------------------------------------------------------
 # load MNIST
