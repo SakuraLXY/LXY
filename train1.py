@@ -370,7 +370,7 @@ while j < (int(num_examples)):
     current_spike_count =  count - previous_spike_count
     previous_spike_count = count
     
-    for a in spike_counters['Ae']:
+    for a in spike_counters_Ae:
         list1.append(len(a))
     
     if j!=0:
