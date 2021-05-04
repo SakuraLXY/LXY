@@ -141,7 +141,7 @@ n_input = 784 #输入层，即28*28
 n_e = 100 #兴奋层
 n_i = n_e #抑制层
 
-运行时间
+#运行时间
 single_example_time = 50 #ms
 resting_time = 150
 theta_time = single_example_time + resting_time
