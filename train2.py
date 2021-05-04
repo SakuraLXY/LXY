@@ -273,7 +273,6 @@ input_groups_Xe = sim.Population(n_input,
 
 print ('create connections between X and A ')
 
-print('aa')
 connections_XeAe = sim.Projection(input_groups_Xe, 
                                 neuron_groups_Ae,
                                 sim.AllToAllConnector(allow_self_connections=False), 
@@ -281,7 +280,7 @@ connections_XeAe = sim.Projection(input_groups_Xe,
                                 receptor_type = 'excitatory'
                                 )
 
-print('bb')
+
 
 #------------------------------------------------------------------------------
 # run the simulation and set inputs
@@ -290,11 +289,12 @@ previous_spike_count = 0
 assignments = np.zeros(n_e)
 input_numbers = [0] * num_examples
 outputNumbers = np.zeros((num_examples, 10))
-
+print('aa')
 sim.run(0)
 
+print('bb')
 print(connections_XeAe.get('weight',format = 'array'))
-
+print('cc')
 theta = np.zeros(n_e)
 print(theta.shape)
 
