@@ -162,7 +162,7 @@ start = time.time()
 training = get_labeled_data(MNIST_data_path + 'training')
 end = time.time()
 print('time needed to load training set:', end - start)
-
+print('$$$$$$ 1time used ',time.time()-start)
 #------------------------------------------------------------------------------
 # set parameters and equations
 #------------------------------------------------------------------------------
@@ -339,6 +339,7 @@ assignments = np.zeros(n_e)
 input_numbers = [0] * num_examples
 outputNumbers = np.zeros((num_examples, 10))
 
+print('$$$$$$ 2 time used ',time.time()-start)
 sim.run(0)
 j = 0
 old_list = []
@@ -397,6 +398,7 @@ while j < (int(num_examples)):
         outputNumbers[j,:] = get_recognized_number_ranking(assignments, result_monitor[j%update_interval,:])
         if j % 100 == 0 and j > 0:#每完成训练100个给出提示
             print ('runs done:', j, 'of', int(num_examples))
+            print('$$$$$$ 3 time used ',time.time()-start)
         # if j % update_interval == 0 and j > 0:
         #     if do_plot_performance:
         #         unused, performance = update_performance_plot(performance_monitor, performance, j, fig_performance)
