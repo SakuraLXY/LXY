@@ -152,7 +152,7 @@ def get_new_assignments(result_monitor, input_numbers):
     return assignments
 
 
-sim.setup(timestep=1,time_scale_factor=1)
+sim.setup(timestep=1,time_scale_factor=20)
 # sim.setup()
 
 #------------------------------------------------------------------------------
@@ -390,31 +390,31 @@ while j < (int(num_examples)):
     
     print(count)
     if current_spike_count < 5:
-        print('$$$$$$ brench 1 s1')
+#         print('$$$$$$ brench 1 s1')
         input_intensity += 1
         for i,name in enumerate(input_population_names):#'X'
             input_groups_Xe.set(rate = 0) ##
-        print('$$$$$$ brench 1 s2')   
+#         print('$$$$$$ brench 1 s2')   
         time.sleep(0.2)
         sim.run(resting_time)
-        print('$$$$$$ brench 1 e')
+#         print('$$$$$$ brench 1 e')
     else:
-        print('$$$$$$ brench 2 s1')
+#         print('$$$$$$ brench 2 s1')
         result_monitor[j%update_interval,:] = current_spike_count
         input_numbers[j] = training['y'][j%60000][0] ###
         outputNumbers[j,:] = get_recognized_number_ranking(assignments, result_monitor[j%update_interval,:])
         if j % 100 == 0 and j > 0:#每完成训练100个给出提示
             print ('runs done:', j, 'of', int(num_examples))
-            print('$$$$$$ 3 time used ',time.time()-start)
+#             print('$$$$$$ 3 time used ',time.time()-start)
         # if j % update_interval == 0 and j > 0:
         #     if do_plot_performance:
         #         unused, performance = update_performance_plot(performance_monitor, performance, j, fig_performance)
         #         print ('Classification performance', performance[:(j/float(update_interval))+1])
-        print('$$$$$$ brench 2 s2')
+#         print('$$$$$$ brench 2 s2')
         input_groups_Xe.set(rate = 0) ##
         time.sleep(0.2)
         sim.run(resting_time)
-        print('$$$$$$ brench 2 e1')
+#         print('$$$$$$ brench 2 e1')
         input_intensity = start_input_intensity#重置强度
         j += 1
 
