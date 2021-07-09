@@ -388,11 +388,15 @@ while j < (int(num_examples)):
     
     print(count)
     if current_spike_count < 5:
+        print('$$$$$$ brench 1 s1')
         input_intensity += 1
         for i,name in enumerate(input_population_names):#'X'
             input_groups_Xe.set(rate = 0) ##
+        print('$$$$$$ brench 1 s2')   
         sim.run(resting_time)
+        print('$$$$$$ brench 1 e')
     else:
+        print('$$$$$$ brench 2 s1')
         result_monitor[j%update_interval,:] = current_spike_count
         input_numbers[j] = training['y'][j%60000][0] ###
         outputNumbers[j,:] = get_recognized_number_ranking(assignments, result_monitor[j%update_interval,:])
@@ -403,7 +407,7 @@ while j < (int(num_examples)):
         #     if do_plot_performance:
         #         unused, performance = update_performance_plot(performance_monitor, performance, j, fig_performance)
         #         print ('Classification performance', performance[:(j/float(update_interval))+1])
-        
+        print('$$$$$$ brench 2 s2')
         input_groups_Xe.set(rate = 0) ##
         
         #sim.run(resting_time)
