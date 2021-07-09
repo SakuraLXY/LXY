@@ -345,7 +345,7 @@ j = 0
 old_list = []
 while j < (int(num_examples)):
     ##这里有一行把权重正则化
-    print(j)
+    print('$$$$$$ running ',j)
     spike_rates = training['x'][j%60000,:,:].reshape((n_input)) / 64. *  input_intensity
 
     input_groups_Xe.set(rate = spike_rates) ##输入神经元的激发率
