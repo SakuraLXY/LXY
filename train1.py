@@ -340,7 +340,7 @@ input_numbers = [0] * num_examples
 outputNumbers = np.zeros((num_examples, 10))
 
 print('$$$$$$ 2 time used ',time.time()-start)
-time.sleep(0.1)
+time.sleep(0.2)
 sim.run(0)
 j = 0
 old_list = []
@@ -395,7 +395,7 @@ while j < (int(num_examples)):
         for i,name in enumerate(input_population_names):#'X'
             input_groups_Xe.set(rate = 0) ##
         print('$$$$$$ brench 1 s2')   
-        time.sleep(0.1)
+        time.sleep(0.2)
         sim.run(resting_time)
         print('$$$$$$ brench 1 e')
     else:
@@ -412,7 +412,7 @@ while j < (int(num_examples)):
         #         print ('Classification performance', performance[:(j/float(update_interval))+1])
         print('$$$$$$ brench 2 s2')
         input_groups_Xe.set(rate = 0) ##
-        time.sleep(0.1)
+        time.sleep(0.2)
         sim.run(resting_time)
         print('$$$$$$ brench 2 e1')
         input_intensity = start_input_intensity#重置强度
