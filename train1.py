@@ -152,7 +152,7 @@ def get_new_assignments(result_monitor, input_numbers):
     return assignments
 
 
-sim.setup(timestep=0.25,time_scale_factor=1)
+sim.setup(timestep=1,time_scale_factor=1)
 # sim.setup()
 
 #------------------------------------------------------------------------------
@@ -225,7 +225,7 @@ V_INIT_I = -20.0
 #stdp_initial_weights = sim.RandomDistribution(distribution='normal_clipped',low=0,high=1, mu=0.5, sigma=0.3)
 #print("Testing stdp initial weight random generator, rand value = ",str(stdp_initial_weights.next()))
 timing_rule = sim.SpikePairRule(tau_plus=8.0,tau_minus=2.0, #8,1
-                             A_plus=0.5,A_minus=0.5) # 80,20
+                             A_plus=0.0625,A_minus=0.0625) # 80,20
 weight_rule = sim.AdditiveWeightDependence(w_max=1.0,w_min=0)
 stdp = sim.STDPMechanism(timing_dependence=timing_rule,
                             weight_dependence=weight_rule,
@@ -411,6 +411,7 @@ while j < (int(num_examples)):
         input_groups_Xe.set(rate = 0) ##
         
         sim.run(resting_time)
+        print('$$$$$$ brench 2 e1')
         input_intensity = start_input_intensity#重置强度
         j += 1
 
