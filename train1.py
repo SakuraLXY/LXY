@@ -179,7 +179,7 @@ n_e = 100 #兴奋层
 n_i = n_e #抑制层
 
 #运行时间
-single_example_time = 10 #ms
+single_example_time = 350 #ms
 resting_time = 150
 runtime = num_examples * (single_example_time + resting_time)
 
@@ -410,7 +410,7 @@ while j < (int(num_examples)):
         print('$$$$$$ brench 2 s2')
         input_groups_Xe.set(rate = 0) ##
         
-        #sim.run(resting_time)
+        sim.run(resting_time)
         input_intensity = start_input_intensity#重置强度
         j += 1
 
