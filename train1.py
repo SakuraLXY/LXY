@@ -311,7 +311,7 @@ neuron_groups_Ai.record("spikes")
 #------------------------------------------------------------------------------
 # create input population and connections from input populations
 #------------------------------------------------------------------------------
-spike_array = training['x'][, :, :].reshape((n_input)) / 64. * input_intensity
+spike_array = training['x'][:, :, :].reshape((n_input)) / 64. * input_intensity
 input_groups_Xe = sim.Population(n_input, 
                                 sim.SpikeSourceArray(spike_array),
                                 label = 'Xe')
