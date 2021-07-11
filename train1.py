@@ -178,7 +178,7 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 60000  # 使用训练例子的数量
+num_examples = 300  # 使用训练例子的数量
 
 ending = ''
 n_input = 784  # 输入层，即28*28
@@ -351,10 +351,12 @@ connections_XeAe = sim.Projection(input_groups_Xe,
 # 保存初始权重
 sim.run(0)
 initWeight = connections_XeAe.get('weight', format='array')
+print(‘init weight:’,initWeight)
 np.save(data_path + 'initWeight' + ending, initWeight)
 sim.run(runtime)
 print('save results')
-
+initWeight = connections_XeAe.get('weight', format='array')
+print(‘after weight:’,initWeight)
 # save_theta()
 save_connections()
 
