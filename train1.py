@@ -315,7 +315,9 @@ neuron_groups_Ai.record("spikes")
 # ------------------------------------------------------------------------------
 # create input population and connections from input populations
 # ------------------------------------------------------------------------------
-x_data = training['x'].reshape((n_input))
+
+x_data = [training['x'][j, :, :].reshape((n_input)) for j in range(60000)]
+# x_data = training['x'].reshape((n_input))
 spike_array =[[] for _ in range(28*28)]
 gap_time= [0 for _ in range(28*28)]
 last_time= [0 for _ in range(28*28)]
