@@ -352,7 +352,7 @@ connections_XeAe = sim.Projection(input_groups_Xe,
 sim.run(0)
 initWeight = connections_XeAe.get('weight', format='array')
 np.save(data_path + 'initWeight' + ending, initWeight)
-sim.run(run_time)
+sim.run(runtime)
 print('save results')
 
 # save_theta()
