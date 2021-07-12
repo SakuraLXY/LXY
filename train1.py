@@ -259,51 +259,6 @@ result_monitor = np.zeros((update_interval, n_e))
 # ------------------------------------------------------------------------------
 # create network population and recurrent connections
 # ------------------------------------------------------------------------------
-
-print('create neuron group A')
-
-neuron_groups_Ae = sim.Population(n_e,
-                                  sim.IF_cond_exp,
-                                  cellparams=e_params,
-                                  initial_values={'v': V_INIT_E},
-                                  label='Ae'
-                                  )
-neuron_groups_Ai = sim.Population(n_i,
-                                  sim.IF_cond_exp,
-                                  cellparams=i_params,
-                                  initial_values={'v': V_INIT_I},
-                                  label='Ai'
-                                  )
-
-print('create recurrent connections')
-
-# Ai -> Ae 的连接
-# connect_AiAe = 17.0*(np.ones([n_e,n_e]) - np.identity(n_e))
-connect_AiAe = []
-for i in range(n_e):
-    for j in range(n_i):
-        if not i == j:
-            connect_AiAe.append((i, j))
-
-connections_AeAi = sim.Projection(neuron_groups_Ae,
-                                  neuron_groups_Ai,
-                                  sim.OneToOneConnector(),
-                                  synapse_type=sim.StaticSynapse(weight=1.0, delay=1.0),
-                                  receptor_type='excitatory'
-                                  )
-connections_AiAe = sim.Projection(neuron_groups_Ai,
-                                  neuron_groups_Ae,
-                                  connector=sim.FromListConnector(connect_AiAe),
-                                  synapse_type=sim.StaticSynapse(weight=0.0625, delay=1.0),
-                                  receptor_type='inhibitory'
-                                  )
-
-
-
-# ------------------------------------------------------------------------------
-# create input population and connections from input populations
-# ------------------------------------------------------------------------------
-
 x_data = [training['x'][j, :, :].reshape((n_input)) for j in range(60000)]
 # x_data = training['x'].reshape((n_input))
 spike_array =[[] for _ in range(28*28)]
@@ -318,10 +273,52 @@ for one_x_data in x_data:
         else:
             gap_time[one_pixel_idx]+=single_example_time + resting_time
 
-
+print('create neuron group A')
 input_groups_Xe = sim.Population(n_input,
                                  sim.SpikeSourceArray(spike_array),
                                  label='Xe')
+
+neuron_groups_Ae = sim.Population(n_e,
+                                  sim.IF_cond_exp(**e_params),
+                                  initial_values={'v': e_params['v_rest']},
+                                  label='Ae'
+                                  )
+neuron_groups_Ai = sim.Population(n_i,
+                                  sim.IF_cond_exp(**i_params),
+                                  initial_values={'v': i_params['v_rest']},
+                                  label='Ai'
+                                  )
+
+print('create recurrent connections')
+connections_AeAi = sim.Projection(neuron_groups_Ae,
+                                  neuron_groups_Ai,
+                                  sim.OneToOneConnector(),
+                                  synapse_type=sim.StaticSynapse(weight=1.0, delay=1.0),
+                                  receptor_type='excitatory'
+                                  )
+# Ai -> Ae 的连接
+# connect_AiAe = 17.0*(np.ones([n_e,n_e]) - np.identity(n_e))
+connect_AiAe = []
+for i in range(n_e):
+    for j in range(n_i):
+        if not i == j:
+            connect_AiAe.append((i, j))
+connections_AiAe = sim.Projection(neuron_groups_Ai,
+                                  neuron_groups_Ae,
+                                  connector=sim.FromListConnector(connect_AiAe),
+                                  synapse_type=sim.StaticSynapse(weight=0.0625, delay=1.0),
+                                  receptor_type='inhibitory'
+                                  )
+
+
+
+# ------------------------------------------------------------------------------
+# create input population and connections from input populations
+# ------------------------------------------------------------------------------
+
+
+
+
 
 print('create connections between X and A ')
 # 使用STDP学习从输入神经元到兴奋性神经元的所有突触
