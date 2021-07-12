@@ -391,7 +391,7 @@ plot.Figure(
     plot.Panel(inh_gi.segments[0].filter(name='gsyn_inh')[0],yticks=True,xticks=True,legend=None),
     plot.Panel(exc_ge.segments[0].filter(name='gsyn_exc')[0],yticks=True,xticks=True,legend=None),
     plot.Panel(inh_gi.segments[0].filter(name='gsyn_inh')[0],yticks=True,xticks=True,legend=None)
-)
+).save('figure1')
 sim.end()
 #
 # previous_spike_count = 0
