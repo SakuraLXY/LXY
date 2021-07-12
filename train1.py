@@ -321,11 +321,11 @@ x_data = [training['x'][j, :, :].reshape((n_input)) for j in range(60000)]
 spike_array =[[] for _ in range(28*28)]
 gap_time= [0 for _ in range(28*28)]
 last_time= [0 for _ in range(28*28)]
-# data_mark=0
+data_mark=0
 for one_x_data in x_data:
-#     if data_mark==0:
-#         data_mark=1
-#         print('one_x_data',one_x_data)
+    if data_mark==0:
+        data_mark=1
+        print('one_x_data',one_x_data)
     for one_pixel_idx in range(28*28):
         if one_x_data[one_pixel_idx]>=1:
             spike_array[one_pixel_idx].append(last_time[one_pixel_idx]+gap_time[one_pixel_idx])
@@ -355,11 +355,11 @@ connections_XeAe = sim.Projection(input_groups_Xe,
 # 保存初始权重
 sim.run(0)
 initWeight = connections_XeAe.get('weight', format='array')
-print(‘init weight:’,initWeight)
+# print(‘init weight:’,initWeight)
 np.save(data_path + 'initWeight' + ending, initWeight)
 sim.run(runtime)
 print('save results')
-initWeight = connections_XeAe.get('weight', format='array')
+# initWeight = connections_XeAe.get('weight', format='array')
 # save_theta()
 save_connections()
 
