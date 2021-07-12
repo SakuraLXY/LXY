@@ -10,6 +10,7 @@ import time
 import os.path
 import scipy
 import pickle
+import pyNN.utility.plotting as plot
 from struct import unpack
 from pyNN.random import RandomDistribution
 from pyNN.parameters import Sequence
@@ -342,8 +343,8 @@ connections_XeAe = sim.Projection(presynaptic_population = input_groups_Xe,
                                   )
 print('create monitors for A')
 # 峰值计数 'Ae' & 'Ai'
-neuron_groups_Ae.record("spikes")
-neuron_groups_Ai.record("spikes")
+neuron_groups_Ae.record(["spikes",'gsyn_exc', 'gsyn_inh','v'])
+neuron_groups_Ai.record(["spikes",'gsyn_exc', 'gsyn_inh','v'])
 input_groups_Xe.record('spikes')
 
 # ------------------------------------------------------------------------------
@@ -366,13 +367,31 @@ save_connections()
 
 
 inp_spikes = input_groups_Xe.get_data("spikes")
-print('&&&&&',inp_spikes.segments[0].spiketrains)
+# print('&&&&&',inp_spikes.segments[0].spiketrains)
 exc_spikes = neuron_groups_Ae.get_data("spikes")
-print('&&&&&',exc_spikes.segments[0].spiketrains)
+# print('&&&&&',exc_spikes.segments[0].spiketrains)
 inh_spikes = neuron_groups_Ai.get_data("spikes")
-print('&&&&&',inh_spikes.segments[0].spiketrains)
+# print('&&&&&',inh_spikes.segments[0].spiketrains)
 # print(outputNumbers)
 
+exc_v = neuron_groups_Ae.get_data("v")
+exc_ge = neuron_groups_Ae.get_data('gsyn_exc')
+exc_gi = neuron_groups_Ae.get_data('gsyn_inh')
+inh_v = neuron_groups_Ai.get_data("v")
+inh_ge = neuron_groups_Ai.get_data('gsyn_exc')
+inh_gi = neuron_groups_Ai.get_data('gsyn_inh')
+plot.Figure(
+    plot.Panel(inp_spikes.segments[0].spiketrains,yticks=True,xticks=True,xlabel="Time"),
+    plot.Panel(exc_spikes.segments[0].spiketrains,yticks=True,xticks=True,xlabel="Time"),
+    plot.Panel(inh_spikes.segments[0].spiketrains,yticks=True,xticks=True,xlabel="Time"),
+    plot.Panel(exc_v.segments[0].filter(name='v')[0],yticks=True,xticks=True,legend=None,ylim=(-70,-50)),
+    plot.Panel(exc_v.segments[0].filter(name='v')[0],yticks=True,xticks=True,legend=None),
+    plot.Panel(inh_v.segments[0].filter(name='v')[0],yticks=True,xticks=True,legend=None),
+    plot.Panel(exc_ge.segments[0].filter(name='gsyn_exc')[0],yticks=True,xticks=True,legend=None),
+    plot.Panel(inh_gi.segments[0].filter(name='gsyn_inh')[0],yticks=True,xticks=True,legend=None),
+    plot.Panel(exc_ge.segments[0].filter(name='gsyn_exc')[0],yticks=True,xticks=True,legend=None),
+    plot.Panel(inh_gi.segments[0].filter(name='gsyn_inh')[0],yticks=True,xticks=True,legend=None)
+)
 sim.end()
 #
 # previous_spike_count = 0
