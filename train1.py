@@ -230,13 +230,13 @@ V_INIT_I = -20.0
 # 使用STDP学习从输入神经元到兴奋性神经元的所有突触
 # stdp_initial_weights = sim.RandomDistribution(distribution='normal_clipped',low=0,high=1, mu=0.5, sigma=0.3)
 # print("Testing stdp initial weight random generator, rand value = ",str(stdp_initial_weights.next()))
-timing_rule = sim.SpikePairRule(tau_plus=8.0, tau_minus=2.0,  # 8,1
-                                A_plus=0.0625, A_minus=0.0625)  # 80,20
-weight_rule = sim.AdditiveWeightDependence(w_max=1.0, w_min=0)
+timing_rule = sim.SpikePairRule(tau_plus=20.0, tau_minus=20.0,  # 8,1
+                                A_plus=0.5, A_minus=0.5)  # 80,20
+weight_rule = sim.AdditiveWeightDependence(w_max=5.0, w_min=0)
 stdp = sim.STDPMechanism(timing_dependence=timing_rule,
                          weight_dependence=weight_rule,
-                         weight=RandomDistribution(distribution='normal_clipped', low=0, high=1, mu=0.5, sigma=0.3),
-                         delay=1.0
+                         weight=0,
+                         delay=5.0
                          )
 
 input_intensity = 2.
@@ -321,13 +321,13 @@ x_data = [training['x'][j, :, :].reshape((n_input)) for j in range(60000)]
 spike_array =[[] for _ in range(28*28)]
 gap_time= [0 for _ in range(28*28)]
 last_time= [0 for _ in range(28*28)]
-data_mark=0
+# data_mark=0
 for one_x_data in x_data:
-    if data_mark==0:
-        data_mark=1
-        print('one_x_data',one_x_data)
+#     if data_mark==0:
+#         data_mark=1
+#         print('one_x_data',one_x_data)
     for one_pixel_idx in range(28*28):
-        if one_x_data[one_pixel_idx]>=1:
+        if one_x_data[one_pixel_idx]>=100:
             spike_array[one_pixel_idx].append(last_time[one_pixel_idx]+gap_time[one_pixel_idx])
             last_time[one_pixel_idx]+=gap_time[one_pixel_idx]
             gap_time[one_pixel_idx]=single_example_time + resting_time
@@ -353,7 +353,7 @@ connections_XeAe = sim.Projection(input_groups_Xe,
 # ------------------------------------------------------------------------------
 
 # 保存初始权重
-sim.run(0)
+sim.run(50)
 initWeight = connections_XeAe.get('weight', format='array')
 # print(‘init weight:’,initWeight)
 np.save(data_path + 'initWeight' + ending, initWeight)
