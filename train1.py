@@ -353,7 +353,7 @@ sim.run(50)
 initWeight = connections_XeAe.get('weight', format='array')
 # print(initWeight)
 np.save(data_path + 'initWeight' + ending, initWeight)
-sim.run(run_time)
+sim.run(runtime)
 print('save results')
 
 # save_theta()
