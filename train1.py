@@ -178,7 +178,7 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 300  # 使用训练例子的数量
+num_examples = 30  # 使用训练例子的数量
 
 ending = ''
 n_input = 784  # 输入层，即28*28
@@ -321,9 +321,13 @@ x_data = [training['x'][j, :, :].reshape((n_input)) for j in range(60000)]
 spike_array =[[] for _ in range(28*28)]
 gap_time= [0 for _ in range(28*28)]
 last_time= [0 for _ in range(28*28)]
+data_mark=0
 for one_x_data in x_data:
+    if data_mark==0:
+        data_mark=1
+        print('one_x_data',one_x_data)
     for one_pixel_idx in range(28*28):
-        if one_x_data[one_pixel_idx]>255/2:
+        if one_x_data[one_pixel_idx]>=1:
             spike_array[one_pixel_idx].append(last_time[one_pixel_idx]+gap_time[one_pixel_idx])
             last_time[one_pixel_idx]+=gap_time[one_pixel_idx]
             gap_time[one_pixel_idx]=single_example_time + resting_time
@@ -356,7 +360,6 @@ np.save(data_path + 'initWeight' + ending, initWeight)
 sim.run(runtime)
 print('save results')
 initWeight = connections_XeAe.get('weight', format='array')
-print(‘after weight:’,initWeight)
 # save_theta()
 save_connections()
 
