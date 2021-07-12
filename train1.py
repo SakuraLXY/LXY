@@ -227,17 +227,7 @@ i_params = {
 V_INIT_E = -25.0
 V_INIT_I = -20.0
 
-# 使用STDP学习从输入神经元到兴奋性神经元的所有突触
-# stdp_initial_weights = sim.RandomDistribution(distribution='normal_clipped',low=0,high=1, mu=0.5, sigma=0.3)
-# print("Testing stdp initial weight random generator, rand value = ",str(stdp_initial_weights.next()))
-timing_rule = sim.SpikePairRule(tau_plus=8.0, tau_minus=2.0,  # 8,1
-                                A_plus=0.0625, A_minus=0.0625)  # 80,20
-weight_rule = sim.AdditiveWeightDependence(w_max=0.01, w_min=0)
-stdp = sim.STDPMechanism(timing_dependence=timing_rule,
-                         weight_dependence=weight_rule,
-                         weight=RandomDistribution(distribution='normal_clipped', low=0, high=1, mu=0.5, sigma=0.3),
-                         delay=1.0
-                         )
+
 
 input_intensity = 2.
 start_input_intensity = input_intensity
@@ -297,20 +287,17 @@ for i in range(n_e):
 connections_AeAi = sim.Projection(neuron_groups_Ae,
                                   neuron_groups_Ai,
                                   sim.OneToOneConnector(),
-                                  synapse_type=sim.StaticSynapse(weight=10.4, delay=1.0),
+                                  synapse_type=sim.StaticSynapse(weight=1.0, delay=1.0),
                                   receptor_type='excitatory'
                                   )
 connections_AiAe = sim.Projection(neuron_groups_Ai,
                                   neuron_groups_Ae,
                                   connector=sim.FromListConnector(connect_AiAe),
-                                  synapse_type=sim.StaticSynapse(weight=17, delay=1.0),
+                                  synapse_type=sim.StaticSynapse(weight=0.0625, delay=1.0),
                                   receptor_type='inhibitory'
                                   )
 
-print('create monitors for A')
-# 峰值计数 'Ae' & 'Ai'
-neuron_groups_Ae.record("spikes")
-neuron_groups_Ai.record("spikes")
+
 
 # ------------------------------------------------------------------------------
 # create input population and connections from input populations
@@ -336,13 +323,28 @@ input_groups_Xe = sim.Population(n_input,
                                  label='Xe')
 
 print('create connections between X and A ')
-
+# 使用STDP学习从输入神经元到兴奋性神经元的所有突触
+# stdp_initial_weights = sim.RandomDistribution(distribution='normal_clipped',low=0,high=1, mu=0.5, sigma=0.3)
+# print("Testing stdp initial weight random generator, rand value = ",str(stdp_initial_weights.next()))
+timing_rule = sim.SpikePairRule(tau_plus=8.0, tau_minus=2.0,  # 8,1
+                                A_plus=0.0625, A_minus=0.0625)  # 80,20
+weight_rule = sim.AdditiveWeightDependence(w_max=1, w_min=0)
+stdp = sim.STDPMechanism(timing_dependence=timing_rule,
+                         weight_dependence=weight_rule,
+                         weight=RandomDistribution(distribution='normal_clipped', low=0, high=1, mu=0.5, sigma=0.3),
+                         delay=1.0
+                         )
 connections_XeAe = sim.Projection(presynaptic_population = input_groups_Xe,
                                   postsynaptic_population=neuron_groups_Ae,
-                                  connector=sim.AllToAllConnector(allow_self_connections=False),
+                                  connector=sim.AllToAllConnector(),
                                   synapse_type=stdp,
                                   receptor_type='excitatory'
                                   )
+print('create monitors for A')
+# 峰值计数 'Ae' & 'Ai'
+neuron_groups_Ae.record("spikes")
+neuron_groups_Ai.record("spikes")
+input_groups_Xe.record('spikes')
 
 # ------------------------------------------------------------------------------
 # run the simulation and set inputs
@@ -361,6 +363,14 @@ print('save results')
 # print(initWeight)
 save_connections()
 
+
+
+inp_spikes = input_groups_Xe.get_data("spikes")
+print('&&&&&',inp_spikes.segments[0].spiketrains)
+exc_spikes = neuron_groups_Ae.get_data("spikes")
+print('&&&&&',exc_spikes.segments[0].spiketrains)
+inh_spikes = neuron_groups_Ai.get_data("spikes")
+print('&&&&&',inh_spikes.segments[0].spiketrains)
 # print(outputNumbers)
 
 sim.end()
