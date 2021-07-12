@@ -230,14 +230,16 @@ V_INIT_I = -20.0
 # 使用STDP学习从输入神经元到兴奋性神经元的所有突触
 # stdp_initial_weights = sim.RandomDistribution(distribution='normal_clipped',low=0,high=1, mu=0.5, sigma=0.3)
 # print("Testing stdp initial weight random generator, rand value = ",str(stdp_initial_weights.next()))
-timing_rule = sim.SpikePairRule(tau_plus=20.0, tau_minus=20.0,  # 8,1
-                                A_plus=0.5, A_minus=0.5)  # 80,20
-weight_rule = sim.AdditiveWeightDependence(w_max=5.0, w_min=0)
+timing_rule = sim.SpikePairRule(tau_plus=8.0,tau_minus=2.0, #8,1
+                             A_plus=0.0625,A_minus=0.0625) # 80,20
+weight_rule = sim.AdditiveWeightDependence(w_max=1.0,w_min=0)
 stdp = sim.STDPMechanism(timing_dependence=timing_rule,
-                         weight_dependence=weight_rule,
-                         weight=0,
-                         delay=5.0
-                         )
+                            weight_dependence=weight_rule,
+                            #weight=RandomDistribution(distribution='normal_clipped',low=0,high=1, mu=0.5, sigma=0.3),
+                            weight=1.0,
+                            delay=RandomDistribution(distribution='uniform',low=1,high=10)
+                            )
+
 
 input_intensity = 2.
 start_input_intensity = input_intensity
