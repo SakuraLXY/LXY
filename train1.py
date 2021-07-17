@@ -398,7 +398,7 @@ for i in range(n_e):
 #         print(0,i,int(j)%500)
 #         print(1,i,class_history[int(j)//500])
         # class_history是历史上选择展示用的数字
-        if recorded_map.get(int(j)//(single_example_time+resting_time),-1)!=-1:
+        if recorded_map[i].get(int(j)//(single_example_time+resting_time),-1)!=-1:
             continue
         recorded_map[i][int(j)//(single_example_time+resting_time)]=1
         number2respond[int(j)//(single_example_time+resting_time)].append(i)
