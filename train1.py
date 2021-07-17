@@ -179,7 +179,7 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 100  # 使用训练例子的数量
+num_examples = 50  # 使用训练例子的数量
 
 ending = ''
 n_input = 784  # 输入层，即28*28
@@ -413,9 +413,7 @@ for i in initial_weights:
         elif j==max_weight:
             j_max+=1
 print(str(j_min)+" out of "+str(len(initial_weights))+" are minimum, i.e. w = "+str(min_weight))
-print("Minimum Weight is "+str(min(initial_weights)))
 print(str(j_max)+" out of "+str(len(initial_weights))+" are maximum, i.e. w = "+str(max_weight))
-print("Maximum Weight is "+str(max(initial_weights)))
 plt.figure()
 ax = sns.distplot(initial_weights,axlabel="Distribution of Initial Weights")
 plt.savefig('distribution_of_ini_weight')
@@ -431,9 +429,7 @@ for i in weights:
         elif j==max_weight:
             j_max+=1
 print(str(j_min)+" out of "+str(len(weights))+" are minimum, i.e. w = "+str(min_weight))
-print("Minimum Weight is "+str(min(weights)))
 print(str(j_max)+" out of "+str(len(weights))+" are maximum, i.e. w = "+str(max_weight))
-print("Maximum Weight is "+str(max(weights)))
 plt.figure()
 ax = sns.distplot(weights,axlabel="Distribution of Final Weights")
 plt.savefig('distribution_of_final_weight')
