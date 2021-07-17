@@ -406,11 +406,12 @@ min_weight = 0
 max_weight = 1
 j_min = min_weight
 j_max = max_weight
-for i in list(initial_weights.reshape(-1)):
-    if i==min_weight:
-        j_min+=1
-    elif i==max_weight:
-        j_max+=1
+for i in initial_weights:
+    for j in i:
+        if j==min_weight:
+            j_min+=1
+        elif j==max_weight:
+            j_max+=1
 print(str(j_min)+" out of "+str(len(initial_weights))+" are minimum, i.e. w = "+str(min_weight))
 print("Minimum Weight is "+str(min(initial_weights)))
 print(str(j_max)+" out of "+str(len(initial_weights))+" are maximum, i.e. w = "+str(max_weight))
@@ -423,11 +424,12 @@ plt.savefig('distribution_of_ini_weight')
 print(weights)
 j_min = min_weight
 j_max = max_weight
-for i in list(weights.reshape(-1)):
-    if i==min_weight:
-        j_min+=1
-    elif i==max_weight:
-        j_max+=1
+for i in weights:
+    for j in i:
+        if j==min_weight:
+            j_min+=1
+        elif j==max_weight:
+            j_max+=1
 print(str(j_min)+" out of "+str(len(weights))+" are minimum, i.e. w = "+str(min_weight))
 print("Minimum Weight is "+str(min(weights)))
 print(str(j_max)+" out of "+str(len(weights))+" are maximum, i.e. w = "+str(max_weight))
