@@ -389,7 +389,7 @@ for i in range(n_e):
 #         print(0,i,int(j)%500)
 #         print(1,i,class_history[int(j)//500])
         # class_history是历史上选择展示用的数字
-        spike_counts[i][training['y'][int(j)//(single_example_time+resting_time)]]+=1
+        spike_counts[i][training['y'][int(j)//(single_example_time+resting_time)][0]]+=1
 
 
 labels = [0]*100
