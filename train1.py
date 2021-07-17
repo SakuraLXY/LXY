@@ -179,7 +179,7 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 50  # 使用训练例子的数量
+num_examples = 100  # 使用训练例子的数量
 
 ending = ''
 n_input = 784  # 输入层，即28*28
@@ -271,8 +271,6 @@ for one_x_data in x_data:
     for one_pixel_idx in range(28*28):
         # 对于每个点给一个时间序列
         oridata=one_x_data[one_pixel_idx]
-        # if one_x_data[one_pixel_idx] > 10:
-        #     spike_array[one_pixel_idx].append(last_time[one_pixel_idx] + gap_time[one_pixel_idx])
         cur_gap=0
         while oridata>20:
             spike_array[one_pixel_idx].append(one_cnt*(single_example_time+resting_time)+cur_gap) #起始时间+当前隔了多久
@@ -379,7 +377,34 @@ exc_spikes = neuron_groups_Ae.get_data("spikes")
 # print('&&&&&',exc_spikes.segments[0].spiketrains)
 inh_spikes = neuron_groups_Ai.get_data("spikes")
 # print('&&&&&',inh_spikes.segments[0].spiketrains)
+
 # print(outputNumbers)
+spikes = exc_spikes.segments[0].spiketrains
+# print(spikes)
+spike_counts = [{i:0 for i in range(10)} for i in range(n_e)] # spike_counts[i][j] 第i个神经元在 数字j上面的spikes数量
+for i in range(n_e):
+    for j in list(spikes[i]): # 第i个神经元的spikes历史 j是时间点，时间点除以每个样本时间就是出现spike的时候是被展示了哪张数字，用了整除所以在展示时间点之后的spike都算那个展示的图片的
+#         print(0,i,int(j)%500)
+#         print(1,i,class_history[int(j)//500])
+        # class_history是历史上选择展示用的数字
+        spike_counts[i][training['y'][int(j)//(single_example_time+resting_time)]]+=1
+
+
+labels = [0]*100
+for i in range(len(spike_counts)): #labels[i] 第i个神经元被分配到的标签？等于它响应最多的那个数字
+    labels[i] = max(spike_counts[i], key=spike_counts[i].get)
+
+print("Labels")
+print(labels)
+num_labels = {i:0 for i in range(10)} #每个标签分配到的神经元数量
+for i in labels:
+    num_labels[i]+=1
+print("Number of labels")
+print(num_labels)
+
+
+
+
 
 exc_v = neuron_groups_Ae.get_data("v")
 exc_ge = neuron_groups_Ae.get_data('gsyn_exc')
@@ -399,40 +424,6 @@ plot.Figure(
     plot.Panel(exc_ge.segments[0].filter(name='gsyn_exc')[0],yticks=True,xticks=True,legend=None),
     plot.Panel(inh_gi.segments[0].filter(name='gsyn_inh')[0],yticks=True,xticks=True,legend=None)
 ).save('figure1')
-
-initial_weights=initWeight
-print(initial_weights)
-min_weight = 0
-max_weight = 1
-j_min = min_weight
-j_max = max_weight
-for i in initial_weights:
-    for j in i:
-        if j==min_weight:
-            j_min+=1
-        elif j==max_weight:
-            j_max+=1
-print(str(j_min)+" out of "+str(len(initial_weights))+" are minimum, i.e. w = "+str(min_weight))
-print(str(j_max)+" out of "+str(len(initial_weights))+" are maximum, i.e. w = "+str(max_weight))
-plt.figure()
-ax = sns.distplot(initial_weights,axlabel="Distribution of Initial Weights")
-plt.savefig('distribution_of_ini_weight')
-
-
-print(weights)
-j_min = min_weight
-j_max = max_weight
-for i in weights:
-    for j in i:
-        if j==min_weight:
-            j_min+=1
-        elif j==max_weight:
-            j_max+=1
-print(str(j_min)+" out of "+str(len(weights))+" are minimum, i.e. w = "+str(min_weight))
-print(str(j_max)+" out of "+str(len(weights))+" are maximum, i.e. w = "+str(max_weight))
-plt.figure()
-ax = sns.distplot(weights,axlabel="Distribution of Final Weights")
-plt.savefig('distribution_of_final_weight')
 
 
 
