@@ -391,6 +391,7 @@ spikes = exc_spikes.segments[0].spiketrains
 # print(spikes)
 spike_counts = [{i:0 for i in range(10)} for i in range(n_e)] # spike_counts[i][j] 第i个神经元在 数字j上面的spikes数量
 for i in range(n_e):
+    print('$$$$$$ spike of %d'%i,spikes[i])
     for j in list(spikes[i]): # 第i个神经元的spikes历史 j是时间点，时间点除以每个样本时间就是出现spike的时候是被展示了哪张数字，用了整除所以在展示时间点之后的spike都算那个展示的图片的
 #         print(0,i,int(j)%500)
 #         print(1,i,class_history[int(j)//500])
@@ -398,6 +399,7 @@ for i in range(n_e):
         spike_counts[i][all_data[int(j)//(single_example_time+resting_time)]['output']]+=1
 
 
+print('train data',train_data)
 labels = [0]*100
 for i in range(len(spike_counts)): #labels[i] 第i个神经元被分配到的标签？等于它响应最多的那个数字
     labels[i] = max(spike_counts[i], key=spike_counts[i].get)
