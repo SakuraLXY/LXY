@@ -402,6 +402,8 @@ plot.Figure(
 
 initial_weights=initWeight
 print(initial_weights)
+min_weight = 0
+max_weight = 1
 j_min = min_weight
 j_max = max_weight
 for i in list(initial_weights):
