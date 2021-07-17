@@ -261,11 +261,11 @@ result_monitor = np.zeros((update_interval, n_e))
 # create network population and recurrent connections
 # ------------------------------------------------------------------------------
 print('$$$$$$ trainingy',training['y'])
-x_data = [training['x'][j, :, :].reshape((n_input)) for j in range(num_examples)]
-all_data= [{'input':x_data[j],'output':training['y'][j][0] }for j in range(num_examples)]
+x_data = [training['x'][j, :, :].reshape((n_input)) for j in range(60000)]
+all_data= [{'input':x_data[j],'output':training['y'][j][0] }for j in range(60000)]
 random.shuffle(all_data)
-train_data=all_data[:len(all_data)//10*9]
-test_data=all_data[len(all_data)//10*9:]
+train_data=all_data[:num_examples]
+test_data=all_data[num_examples:num_examples+100]
 # x_data = training['x'].reshape((n_input))
 spike_array =[[] for _ in range(28*28)]
 gap_time= [0 for _ in range(28*28)]
@@ -395,7 +395,7 @@ for i in range(n_e):
 #         print(0,i,int(j)%500)
 #         print(1,i,class_history[int(j)//500])
         # class_history是历史上选择展示用的数字
-        spike_counts[i][train_data[int(j)//(single_example_time+resting_time)]['output']]+=1
+        spike_counts[i][all_data[int(j)//(single_example_time+resting_time)]['output']]+=1
 
 
 labels = [0]*100
