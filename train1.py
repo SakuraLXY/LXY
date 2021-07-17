@@ -17,6 +17,7 @@ from pyNN.parameters import Sequence
 from pyNN.utility.plotting import DataTable
 from quantities import Hz, s, ms, mV
 from struct import unpack
+import random
 
 # specify the location of the MNIST data
 MNIST_data_path = ''
@@ -179,7 +180,7 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 10  # 使用训练例子的数量
+num_examples = 200  # 使用训练例子的数量
 
 ending = ''
 n_input = 784  # 输入层，即28*28
@@ -261,13 +262,18 @@ result_monitor = np.zeros((update_interval, n_e))
 # ------------------------------------------------------------------------------
 print('$$$$$$ trainingy',training['y'])
 x_data = [training['x'][j, :, :].reshape((n_input)) for j in range(num_examples)]
+all_data= [{'input':x_data[j],'output':training['y'][j][0] }for j in range(num_examples)]
+random.shuffle(all_data)
+train_data=all_data[:len(all_data)//10*9]
+test_data=all_data[len(all_data)//10*9:]
 # x_data = training['x'].reshape((n_input))
 spike_array =[[] for _ in range(28*28)]
 gap_time= [0 for _ in range(28*28)]
 last_time= [0 for _ in range(28*28)]
 small_gap=5
 one_cnt=0
-for one_x_data in x_data:
+for one_x_data in train_data:
+    one_x_data=one_x_data['input']
     one_cnt+=1
     for one_pixel_idx in range(28*28):
         # 对于每个点给一个时间序列
@@ -389,7 +395,7 @@ for i in range(n_e):
 #         print(0,i,int(j)%500)
 #         print(1,i,class_history[int(j)//500])
         # class_history是历史上选择展示用的数字
-        spike_counts[i][training['y'][int(j)//(single_example_time+resting_time)][0]]+=1
+        spike_counts[i][train_data[int(j)//(single_example_time+resting_time)]['output']]+=1
 
 
 labels = [0]*100
