@@ -307,7 +307,7 @@ print('create recurrent connections')
 connections_AeAi = sim.Projection(neuron_groups_Ae,
                                   neuron_groups_Ai,
                                   sim.OneToOneConnector(),
-                                  synapse_type=sim.StaticSynapse(weight=1.0, delay=1.0),
+                                  synapse_type=sim.StaticSynapse(weight=10.4, delay=1.0),
                                   receptor_type='excitatory'
                                   )
 # Ai -> Ae 的连接
@@ -320,7 +320,7 @@ for i in range(n_e):
 connections_AiAe = sim.Projection(neuron_groups_Ai,
                                   neuron_groups_Ae,
                                   connector=sim.FromListConnector(connect_AiAe),
-                                  synapse_type=sim.StaticSynapse(weight=0.0625, delay=1.0),
+                                  synapse_type=sim.StaticSynapse(weight=17, delay=1.0),
                                   receptor_type='inhibitory'
                                   )
 
