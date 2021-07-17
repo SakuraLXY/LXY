@@ -259,12 +259,12 @@ result_monitor = np.zeros((update_interval, n_e))
 # ------------------------------------------------------------------------------
 # create network population and recurrent connections
 # ------------------------------------------------------------------------------
-x_data = [training['x'][j, :, :].reshape((n_input)) for j in range(60000)]
+x_data = [training['x'][j, :, :].reshape((n_input)) for j in range(num_examples)]
 # x_data = training['x'].reshape((n_input))
 spike_array =[[] for _ in range(28*28)]
 gap_time= [0 for _ in range(28*28)]
 last_time= [0 for _ in range(28*28)]
-small_gap=10
+small_gap=5
 one_cnt=0
 for one_x_data in x_data:
     one_cnt+=1
@@ -274,10 +274,12 @@ for one_x_data in x_data:
         # if one_x_data[one_pixel_idx] > 10:
         #     spike_array[one_pixel_idx].append(last_time[one_pixel_idx] + gap_time[one_pixel_idx])
         cur_gap=0
-        while oridata>10:
+        while oridata>20:
             spike_array[one_pixel_idx].append(one_cnt*(single_example_time+resting_time)+cur_gap) #起始时间+当前隔了多久
             cur_gap+=small_gap
-            oridata-=10
+            oridata-=20
+print('$$$$$$ spikearray',spike_array[500])
+print(spike_array)
 
 
 print('create neuron group A')
