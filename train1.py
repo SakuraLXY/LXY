@@ -179,7 +179,7 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 100  # 使用训练例子的数量
+num_examples = 10  # 使用训练例子的数量
 
 ending = ''
 n_input = 784  # 输入层，即28*28
@@ -259,6 +259,7 @@ result_monitor = np.zeros((update_interval, n_e))
 # ------------------------------------------------------------------------------
 # create network population and recurrent connections
 # ------------------------------------------------------------------------------
+print('$$$$$$ trainingy',training['y'])
 x_data = [training['x'][j, :, :].reshape((n_input)) for j in range(num_examples)]
 # x_data = training['x'].reshape((n_input))
 spike_array =[[] for _ in range(28*28)]
@@ -377,6 +378,7 @@ exc_spikes = neuron_groups_Ae.get_data("spikes")
 # print('&&&&&',exc_spikes.segments[0].spiketrains)
 inh_spikes = neuron_groups_Ai.get_data("spikes")
 # print('&&&&&',inh_spikes.segments[0].spiketrains)
+
 
 # print(outputNumbers)
 spikes = exc_spikes.segments[0].spiketrains
