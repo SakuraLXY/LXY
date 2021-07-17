@@ -278,8 +278,8 @@ for one_x_data in x_data:
             spike_array[one_pixel_idx].append(one_cnt*(single_example_time+resting_time)+cur_gap) #起始时间+当前隔了多久
             cur_gap+=small_gap
             oridata-=20
-print('$$$$$$ spikearray',spike_array[500])
-print(spike_array)
+# print('$$$$$$ spikearray',spike_array[500])
+# print(spike_array)
 
 
 print('create neuron group A')
@@ -406,7 +406,7 @@ min_weight = 0
 max_weight = 1
 j_min = min_weight
 j_max = max_weight
-for i in list(initial_weights):
+for i in list(initial_weights.reshape(-1)):
     if i==min_weight:
         j_min+=1
     elif i==max_weight:
@@ -423,7 +423,7 @@ plt.savefig('distribution_of_ini_weight')
 print(weights)
 j_min = min_weight
 j_max = max_weight
-for i in list(weights):
+for i in list(weights.reshape(-1)):
     if i==min_weight:
         j_min+=1
     elif i==max_weight:
