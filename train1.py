@@ -180,7 +180,7 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 200  # 使用训练例子的数量
+num_examples = 500  # 使用训练例子的数量
 
 ending = ''
 n_input = 784  # 输入层，即28*28
@@ -391,7 +391,8 @@ spikes = exc_spikes.segments[0].spiketrains
 # print(spikes)
 spike_counts = [{i:0 for i in range(10)} for i in range(n_e)] # spike_counts[i][j] 第i个神经元在 数字j上面的spikes数量
 recorded_map=[{}  for _ in range(n_e)]
-number2respond=[[] for _ in range(num_examples+100)]
+number2respond=[[] for _ in range(num_examples+1)]
+
 for i in range(n_e):
     # print('$$$$$$ spike of %d'%i,list(spikes[i]))
     for j in list(spikes[i]): # 第i个神经元的spikes历史 j是时间点，时间点除以每个样本时间就是出现spike的时候是被展示了哪张数字，用了整除所以在展示时间点之后的spike都算那个展示的图片的
@@ -402,16 +403,21 @@ for i in range(n_e):
             continue
         recorded_map[i][int(j)//(single_example_time+resting_time)]=1
         number2respond[int(j)//(single_example_time+resting_time)].append(i)
+        if int(j)//(single_example_time+resting_time)>=num_examples-100: #最后的100个就不统计了，拿来作为测试样例
+            continue
         spike_counts[i][all_data[int(j)//(single_example_time+resting_time)]['output']]+=1
 
-for i in range(num_examples):
-    print('$$$$$$ number %d -label %d,respond'%(i,train_data[i]['output']),number2respond[i])
+# for i in range(num_examples):
+#     print('$$$$$$ number %d -label %d,respond'%(i,train_data[i]['output']),number2respond[i])
 
 # print('train data',train_data)
 labels = [0]*100
+number2spikecnt=[0]*10  #一个数字激发过的火花数，后面用来算概率
 for i in range(len(spike_counts)): #labels[i] 第i个神经元被分配到的标签？等于它响应最多的那个数字
     print('spike_counts of %d'%(i),spike_counts[i])
     labels[i] = max(spike_counts[i], key=spike_counts[i].get)
+    for j in range(10):
+        number2spikecnt[j]+=spike_counts[i][j]
 
 print("Labels")
 print(labels)
@@ -421,7 +427,28 @@ for i in labels:
 print("Number of labels")
 print(num_labels)
 
-
+# -----------test the last 100 numbers------------
+correct_cnt=0
+for i in range(100):#最后100个作为测试例子
+    respond_neural_list=number2respond[num_examples-i]
+    correct_label=train_data[num_examples-i]['output']
+    history_cnt=[0]*10 #计算这些神经元在历史上响应过每个数字的次数总和
+    for neural_idx in respond_neural_list:
+        for j in range(10):
+            history_cnt[j]+=spike_counts[neural_idx][j]
+    for j in range(10):
+        history_cnt[j]/=number2spikecnt[j]
+    max_pro=0
+    max_pro_idx=0
+    for j in range(10):
+        if history_cnt[j]>max_pro:
+            max_pro=history_cnt[j]
+            max_pro_idx=j
+    print('test_correct_label',correct_label,'predict_label',max_pro_idx)
+    print('probability',history_cnt)
+    if max_pro_idx==correct_label:
+        correct_cnt+=1
+print('correct cnt',correct_cnt)
 
 
 
