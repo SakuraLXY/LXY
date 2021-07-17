@@ -270,19 +270,19 @@ test_data=all_data[num_examples:num_examples+100]
 spike_array =[[] for _ in range(28*28)]
 gap_time= [0 for _ in range(28*28)]
 last_time= [0 for _ in range(28*28)]
-small_gap=5
+small_gap=20
 one_cnt=0
 for one_x_data in train_data:
     one_x_data=one_x_data['input']
-    one_cnt+=1
     for one_pixel_idx in range(28*28):
         # 对于每个点给一个时间序列
         oridata=one_x_data[one_pixel_idx]
         cur_gap=0
-        while oridata>20:
-            spike_array[one_pixel_idx].append(one_cnt*(single_example_time+resting_time)+cur_gap) #起始时间+当前隔了多久
+        while oridata>35:
+            spike_array[one_pixel_idx].append(50+one_cnt*(single_example_time+resting_time)+cur_gap) #起始时间+当前隔了多久
             cur_gap+=small_gap
-            oridata-=20
+            oridata-=35
+    one_cnt += 1
 # print('$$$$$$ spikearray',spike_array[500])
 # print(spike_array)
 
