@@ -279,7 +279,7 @@ for one_x_data in train_data:
         oridata=one_x_data[one_pixel_idx]
         cur_gap=0
         while oridata>35:
-            spike_array[one_pixel_idx].append(50+one_cnt*(single_example_time+resting_time)+cur_gap) #起始时间+当前隔了多久
+            spike_array[one_pixel_idx].append(1+one_cnt*(single_example_time+resting_time)+cur_gap) #起始时间+当前隔了多久
             cur_gap+=small_gap
             oridata-=35
     one_cnt += 1
@@ -363,7 +363,7 @@ input_groups_Xe.record('spikes')
 # ------------------------------------------------------------------------------
 
 # 保存初始权重
-sim.run(50)
+sim.run(1)
 initWeight = connections_XeAe.get('weight', format='array')
 # print(initWeight)
 np.save(data_path + 'initWeight' + ending, initWeight)
@@ -407,9 +407,11 @@ for i in range(n_e):
             continue
         spike_counts[i][all_data[int(j)//(single_example_time+resting_time)]['output']]+=1
 
-# for i in range(num_examples):
-#     print('$$$$$$ number %d -label %d,respond'%(i,train_data[i]['output']),number2respond[i])
-
+for i in range(num_examples):
+    print('$$$$$$ number %d -label %d,respond'%(i,train_data[i]['output']),number2respond[i])
+for i in range(n_e):
+    print('neural %d respond to '%i,recorded_map[i])
+    
 # print('train data',train_data)
 labels = [0]*100
 number2spikecnt=[0]*10  #一个数字激发过的火花数，后面用来算概率
@@ -428,10 +430,11 @@ print("Number of labels")
 print(num_labels)
 
 # -----------test the last 100 numbers------------
+
 correct_cnt=0
 for i in range(100):#最后100个作为测试例子
-    respond_neural_list=number2respond[num_examples-i]
-    correct_label=train_data[num_examples-i]['output']
+    respond_neural_list=number2respond[num_examples-i-1]
+    correct_label=train_data[num_examples-i-1]['output']
     history_cnt=[0]*10 #计算这些神经元在历史上响应过每个数字的次数总和
     for neural_idx in respond_neural_list:
         for j in range(10):
