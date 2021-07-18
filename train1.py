@@ -180,7 +180,7 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 500  # 使用训练例子的数量
+num_examples = 200  # 使用训练例子的数量
 
 ending = ''
 n_input = 784  # 输入层，即28*28
@@ -411,7 +411,7 @@ for i in range(num_examples):
     print('$$$$$$ number %d -label %d,respond'%(i,train_data[i]['output']),number2respond[i])
 for i in range(n_e):
     print('neural %d respond to '%i,recorded_map[i])
-    
+
 # print('train data',train_data)
 labels = [0]*100
 number2spikecnt=[0]*10  #一个数字激发过的火花数，后面用来算概率
@@ -430,28 +430,28 @@ print("Number of labels")
 print(num_labels)
 
 # -----------test the last 100 numbers------------
-
-correct_cnt=0
-for i in range(100):#最后100个作为测试例子
-    respond_neural_list=number2respond[num_examples-i-1]
-    correct_label=train_data[num_examples-i-1]['output']
-    history_cnt=[0]*10 #计算这些神经元在历史上响应过每个数字的次数总和
-    for neural_idx in respond_neural_list:
-        for j in range(10):
-            history_cnt[j]+=spike_counts[neural_idx][j]
-    for j in range(10):
-        history_cnt[j]/=number2spikecnt[j]
-    max_pro=0
-    max_pro_idx=0
-    for j in range(10):
-        if history_cnt[j]>max_pro:
-            max_pro=history_cnt[j]
-            max_pro_idx=j
-    print('test_correct_label',correct_label,'predict_label',max_pro_idx)
-    print('probability',history_cnt)
-    if max_pro_idx==correct_label:
-        correct_cnt+=1
-print('correct cnt',correct_cnt)
+#
+# correct_cnt=0
+# for i in range(100):#最后100个作为测试例子
+#     respond_neural_list=number2respond[num_examples-i-1]
+#     correct_label=train_data[num_examples-i-1]['output']
+#     history_cnt=[0]*10 #计算这些神经元在历史上响应过每个数字的次数总和
+#     for neural_idx in respond_neural_list:
+#         for j in range(10):
+#             history_cnt[j]+=spike_counts[neural_idx][j]
+#     for j in range(10):
+#         history_cnt[j]/=number2spikecnt[j]
+#     max_pro=0
+#     max_pro_idx=0
+#     for j in range(10):
+#         if history_cnt[j]>max_pro:
+#             max_pro=history_cnt[j]
+#             max_pro_idx=j
+#     print('test_correct_label',correct_label,'predict_label',max_pro_idx)
+#     print('probability',history_cnt)
+#     if max_pro_idx==correct_label:
+#         correct_cnt+=1
+# print('correct cnt',correct_cnt)
 
 
 
