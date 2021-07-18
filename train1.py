@@ -180,7 +180,7 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 600  # 使用训练例子的数量
+num_examples = 500  # 使用训练例子的数量
 
 ending = ''
 n_input = 784  # 输入层，即28*28
@@ -407,10 +407,10 @@ for i in range(n_e):
             continue
         spike_counts[i][all_data[int(j)//(single_example_time+resting_time)]['output']]+=1
 
-for i in range(num_examples):
-    print('$$$$$$ number %d -label %d,respond'%(i,train_data[i]['output']),number2respond[i])
-for i in range(n_e):
-    print('neural %d respond to '%i,recorded_map[i])
+# for i in range(num_examples):
+#     print('$$$$$$ number %d -label %d,respond'%(i,train_data[i]['output']),number2respond[i])
+# for i in range(n_e):
+#     print('neural %d respond to '%i,recorded_map[i])
 
 # print('train data',train_data)
 labels = [0]*100
@@ -454,26 +454,26 @@ for i in range(100):#最后100个作为测试例子
 print('correct cnt',correct_cnt)
 
 
-
-exc_v = neuron_groups_Ae.get_data("v")
-exc_ge = neuron_groups_Ae.get_data('gsyn_exc')
-exc_gi = neuron_groups_Ae.get_data('gsyn_inh')
-inh_v = neuron_groups_Ai.get_data("v")
-inh_ge = neuron_groups_Ai.get_data('gsyn_exc')
-inh_gi = neuron_groups_Ai.get_data('gsyn_inh')
-plot.Figure(
-    plot.Panel(inp_spikes.segments[0].spiketrains,yticks=True,xticks=True,xlabel="Time"),
-    plot.Panel(exc_spikes.segments[0].spiketrains,yticks=True,xticks=True,xlabel="Time"),
-    plot.Panel(inh_spikes.segments[0].spiketrains,yticks=True,xticks=True,xlabel="Time"),
-    plot.Panel(exc_v.segments[0].filter(name='v')[0],yticks=True,xticks=True,legend=None,ylim=(-70,-50)),
-    plot.Panel(exc_v.segments[0].filter(name='v')[0],yticks=True,xticks=True,legend=None),
-    plot.Panel(inh_v.segments[0].filter(name='v')[0],yticks=True,xticks=True,legend=None),
-    plot.Panel(exc_ge.segments[0].filter(name='gsyn_exc')[0],yticks=True,xticks=True,legend=None),
-    plot.Panel(inh_gi.segments[0].filter(name='gsyn_inh')[0],yticks=True,xticks=True,legend=None),
-    plot.Panel(exc_ge.segments[0].filter(name='gsyn_exc')[0],yticks=True,xticks=True,legend=None),
-    plot.Panel(inh_gi.segments[0].filter(name='gsyn_inh')[0],yticks=True,xticks=True,legend=None)
-).save('figure1')
-
+#
+# exc_v = neuron_groups_Ae.get_data("v")
+# exc_ge = neuron_groups_Ae.get_data('gsyn_exc')
+# exc_gi = neuron_groups_Ae.get_data('gsyn_inh')
+# inh_v = neuron_groups_Ai.get_data("v")
+# inh_ge = neuron_groups_Ai.get_data('gsyn_exc')
+# inh_gi = neuron_groups_Ai.get_data('gsyn_inh')
+# plot.Figure(
+#     plot.Panel(inp_spikes.segments[0].spiketrains,yticks=True,xticks=True,xlabel="Time"),
+#     plot.Panel(exc_spikes.segments[0].spiketrains,yticks=True,xticks=True,xlabel="Time"),
+#     plot.Panel(inh_spikes.segments[0].spiketrains,yticks=True,xticks=True,xlabel="Time"),
+#     plot.Panel(exc_v.segments[0].filter(name='v')[0],yticks=True,xticks=True,legend=None,ylim=(-70,-50)),
+#     plot.Panel(exc_v.segments[0].filter(name='v')[0],yticks=True,xticks=True,legend=None),
+#     plot.Panel(inh_v.segments[0].filter(name='v')[0],yticks=True,xticks=True,legend=None),
+#     plot.Panel(exc_ge.segments[0].filter(name='gsyn_exc')[0],yticks=True,xticks=True,legend=None),
+#     plot.Panel(inh_gi.segments[0].filter(name='gsyn_inh')[0],yticks=True,xticks=True,legend=None),
+#     plot.Panel(exc_ge.segments[0].filter(name='gsyn_exc')[0],yticks=True,xticks=True,legend=None),
+#     plot.Panel(inh_gi.segments[0].filter(name='gsyn_inh')[0],yticks=True,xticks=True,legend=None)
+# ).save('figure1')
+#
 
 
 sim.end()
