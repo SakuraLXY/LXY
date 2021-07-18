@@ -367,7 +367,9 @@ sim.run(1)
 initWeight = connections_XeAe.get('weight', format='array')
 # print(initWeight)
 np.save(data_path + 'initWeight' + ending, initWeight)
-sim.run(runtime)
+
+sim.run(runtime//2)
+sim.run(runtime//2)
 weights = connections_XeAe.get('weight', format='array')
 print('save results')
 
