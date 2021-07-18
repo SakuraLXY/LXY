@@ -180,7 +180,7 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 2000  # 使用训练例子的数量
+num_examples = 400  # 使用训练例子的数量
 
 ending = ''
 n_input = 784  # 输入层，即28*28
