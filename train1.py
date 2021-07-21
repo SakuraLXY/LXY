@@ -264,6 +264,7 @@ result_monitor = np.zeros((update_interval, n_e))
 print('$$$$$$ trainingy',training['y'])
 x_data = [training['x'][j, :, :].reshape((n_input)) for j in range(60000)]
 all_data= [{'input':x_data[j],'output':training['y'][j][0] }for j in range(60000)]
+random.seed=0
 random.shuffle(all_data)
 train_data=all_data[:num_examples]
 test_data=all_data[num_examples:num_examples+100]
