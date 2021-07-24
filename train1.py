@@ -383,7 +383,7 @@ print('save results')
 # save_theta()
 # initWeight = connections_XeAe.get('weight', format='array')
 # print(initWeight)
-save_connections(1)
+save_connections('1')
 
 
 
