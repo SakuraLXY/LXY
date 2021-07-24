@@ -343,9 +343,15 @@ print('create connections between X and A ')
 timing_rule = sim.SpikePairRule(tau_plus=8.0, tau_minus=2.0,  # 8,1
                                 A_plus=0.0625, A_minus=0.0625)  # 80,20
 weight_rule = sim.AdditiveWeightDependence(w_max=1, w_min=0)
+last_weight=np.load('XeAe.npy')
+# stdp = sim.STDPMechanism(timing_dependence=timing_rule,
+#                          weight_dependence=weight_rule,
+#                          weight=RandomDistribution(distribution='normal_clipped', low=0, high=1, mu=0.5, sigma=0.3),
+#                          delay=1.0
+#                          )
 stdp = sim.STDPMechanism(timing_dependence=timing_rule,
                          weight_dependence=weight_rule,
-                         weight=RandomDistribution(distribution='normal_clipped', low=0, high=1, mu=0.5, sigma=0.3),
+                         weight=last_weight,
                          delay=1.0
                          )
 connections_XeAe = sim.Projection(presynaptic_population = input_groups_Xe,
@@ -377,7 +383,7 @@ print('save results')
 # save_theta()
 # initWeight = connections_XeAe.get('weight', format='array')
 # print(initWeight)
-save_connections(str((turns+1)*400))
+save_connections()
 
 
 
