@@ -362,9 +362,10 @@ connections_XeAe = sim.Projection(presynaptic_population = input_groups_Xe,
                                   )
 print('create monitors for A')
 # 峰值计数 'Ae' & 'Ai'
-neuron_groups_Ae.record(["spikes",'gsyn_exc', 'gsyn_inh','v'])
-neuron_groups_Ai.record(["spikes",'gsyn_exc', 'gsyn_inh','v'])
-input_groups_Xe.record('spikes')
+neuron_groups_Ae.record('spikes')
+# neuron_groups_Ae.record(["spikes",'gsyn_exc', 'gsyn_inh','v'])
+# neuron_groups_Ai.record(["spikes",'gsyn_exc', 'gsyn_inh','v'])
+# input_groups_Xe.record('spikes')
 
 # ------------------------------------------------------------------------------
 # run the simulation and set inputs
@@ -387,11 +388,11 @@ save_connections('1')
 
 
 
-inp_spikes = input_groups_Xe.get_data("spikes")
+# inp_spikes = input_groups_Xe.get_data("spikes")
 # print('&&&&&',inp_spikes.segments[0].spiketrains)
 exc_spikes = neuron_groups_Ae.get_data("spikes")
 # print('&&&&&',exc_spikes.segments[0].spiketrains)
-inh_spikes = neuron_groups_Ai.get_data("spikes")
+# inh_spikes = neuron_groups_Ai.get_data("spikes")
 # print('&&&&&',inh_spikes.segments[0].spiketrains)
 
 
