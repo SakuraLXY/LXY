@@ -180,7 +180,7 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 800  #  一次使用训练例子的数量。再多就不行了
+num_examples = 6000  #  一次使用训练例子的数量。再多就不行了
 turns=0 # 这是第几次训练
 
 ending = ''
@@ -362,10 +362,10 @@ connections_XeAe = sim.Projection(presynaptic_population = input_groups_Xe,
                                   )
 print('create monitors for A')
 # 峰值计数 'Ae' & 'Ai'
-# neuron_groups_Ae.record('spikes')
-neuron_groups_Ae.record(["spikes",'gsyn_exc', 'gsyn_inh','v'])
-neuron_groups_Ai.record(["spikes",'gsyn_exc', 'gsyn_inh','v'])
-input_groups_Xe.record('spikes')
+neuron_groups_Ae.record('spikes')
+# neuron_groups_Ae.record(["spikes",'gsyn_exc', 'gsyn_inh','v'])
+# neuron_groups_Ai.record(["spikes",'gsyn_exc', 'gsyn_inh','v'])
+# input_groups_Xe.record('spikes')
 
 # ------------------------------------------------------------------------------
 # run the simulation and set inputs
