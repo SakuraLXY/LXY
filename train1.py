@@ -161,7 +161,7 @@ def get_new_assignments(result_monitor, input_numbers):
     return assignments
 
 
-sim.setup(timestep=1, time_scale_factor=3)
+sim.setup(timestep=1, time_scale_factor=10)
 # sim.setup()
 
 # ------------------------------------------------------------------------------
