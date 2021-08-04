@@ -284,6 +284,7 @@ for one_x_data in train_data:
             spike_array[one_pixel_idx].append(1+one_cnt*(single_example_time+resting_time)+cur_gap) #起始时间+当前隔了多久
             cur_gap+=small_gap
             oridata-=35
+            break
     one_cnt += 1
 # print('$$$$$$ spikearray',spike_array[500])
 # print(spike_array)
