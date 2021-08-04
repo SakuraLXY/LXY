@@ -161,7 +161,7 @@ def get_new_assignments(result_monitor, input_numbers):
     return assignments
 
 
-sim.setup(timestep=1, time_scale_factor=10)
+sim.setup(timestep=1, time_scale_factor=1)
 # sim.setup()
 
 # ------------------------------------------------------------------------------
@@ -180,7 +180,7 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 2000  #  一次使用训练例子的数量。再多就不行了
+num_examples = 200  #  一次使用训练例子的数量。再多就不行了
 turns=0 # 这是第几次训练
 
 ending = ''
@@ -343,7 +343,7 @@ print('create connections between X and A ')
 timing_rule = sim.SpikePairRule(tau_plus=8.0, tau_minus=2.0,  # 8,1
                                 A_plus=0.0625, A_minus=0.0625)  # 80,20
 weight_rule = sim.AdditiveWeightDependence(w_max=1, w_min=0)
-last_weight=np.load('XeAe.npy').reshape(-1)
+last_weight=np.load('nweight.npy').reshape(-1)
 # stdp = sim.STDPMechanism(timing_dependence=timing_rule,
 #                          weight_dependence=weight_rule,
 #                          weight=RandomDistribution(distribution='normal_clipped', low=0, high=1, mu=0.5, sigma=0.3),
