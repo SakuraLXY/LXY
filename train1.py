@@ -449,7 +449,7 @@ respondlist=[]
 for i in range(100):#最后100个作为测试例子
     respond_neural_list=number2respond[num_examples-i-1]
     correct_label=train_data[num_examples-i-1]['output']
-    respondlist.append({'label':respond_neural_list})
+    respondlist.append({correct_label:respond_neural_list})
     history_cnt=[0]*10 #计算这些神经元在历史上响应过每个数字的次数总和
     for neural_idx in respond_neural_list:
         for j in range(10):
