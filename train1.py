@@ -445,15 +445,17 @@ print(num_labels)
 # -----------test the last 100 numbers------------
 #
 correct_cnt=0
+respondlist=[]
 for i in range(100):#最后100个作为测试例子
     respond_neural_list=number2respond[num_examples-i-1]
     correct_label=train_data[num_examples-i-1]['output']
+    respondlist.append({'label':respond_neural_list})
     history_cnt=[0]*10 #计算这些神经元在历史上响应过每个数字的次数总和
     for neural_idx in respond_neural_list:
         for j in range(10):
             history_cnt[j]+=spike_counts[neural_idx][j]
     for j in range(10):
-        history_cnt[j]/=number2spikecnt[j]
+        history_cnt[j]/=(number2spikecnt[j]+1)
     max_pro=0
     max_pro_idx=0
     for j in range(10):
@@ -465,6 +467,7 @@ for i in range(100):#最后100个作为测试例子
     if max_pro_idx==correct_label:
         correct_cnt+=1
 print('correct cnt',correct_cnt)
+np.save('respondlist.npy',respondlist)
 
 
 #
