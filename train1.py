@@ -208,7 +208,7 @@ e_params = {
     'tau_syn_I': 2.0,  # Decay time of the inhibitory synaptic conductance in ms.
     'e_rev_E': 0.0,  # Reversal potential for excitatory input in mV
     'e_rev_I': -100.0,  # Reversal potential for inhibitory input in mV
-    'v_thresh': -52.0,  # Spike threshold in mV.
+    'v_thresh': -32.0,  # Spike threshold in mV.
     'v_reset': -65.0,  # Reset potential after a spike in mV.
     'i_offset': 0.0,  # Offset current in nA
 }
@@ -342,7 +342,7 @@ print('create connections between X and A ')
 # stdp_initial_weights = sim.RandomDistribution(distribution='normal_clipped',low=0,high=1, mu=0.5, sigma=0.3)
 # print("Testing stdp initial weight random generator, rand value = ",str(stdp_initial_weights.next()))
 timing_rule = sim.SpikePairRule(tau_plus=8.0, tau_minus=2.0,  # 8,1
-                                A_plus=0.0625, A_minus=0.0625)  # 80,20
+                                A_plus=0.0005, A_minus=0.0005)  # 80,20
 weight_rule = sim.AdditiveWeightDependence(w_max=1, w_min=0)
 last_weight=np.load('nweight.npy').reshape(-1)
 # stdp = sim.STDPMechanism(timing_dependence=timing_rule,
