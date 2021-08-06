@@ -404,6 +404,8 @@ spike_counts = [{i:0 for i in range(10)} for i in range(n_e)] # spike_counts[i][
 recorded_map=[{}  for _ in range(n_e)]
 number2respond=[[] for _ in range(num_examples+1)]
 
+numpy_spikes=[list(i) for i in spikes]
+np.save('spikes.npy',numpy_spikes)
 for i in range(n_e):
     # print('$$$$$$ spike of %d'%i,list(spikes[i]))
     for j in list(spikes[i]): # 第i个神经元的spikes历史 j是时间点，时间点除以每个样本时间就是出现spike的时候是被展示了哪张数字，用了整除所以在展示时间点之后的spike都算那个展示的图片的
