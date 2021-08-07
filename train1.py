@@ -180,7 +180,7 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 200  #  一次使用训练例子的数量。再多就不行了
+num_examples = 6000  #  一次使用训练例子的数量。再多就不行了
 turns=0 # 这是第几次训练
 
 ending = ''
@@ -208,7 +208,7 @@ e_params = {
     'tau_syn_I': 2.0,  # Decay time of the inhibitory synaptic conductance in ms.
     'e_rev_E': 0.0,  # Reversal potential for excitatory input in mV
     'e_rev_I': -100.0,  # Reversal potential for inhibitory input in mV
-    'v_thresh': -32.0,  # Spike threshold in mV.
+    'v_thresh': -52.0,  # Spike threshold in mV.
     'v_reset': -65.0,  # Reset potential after a spike in mV.
     'i_offset': 0.0,  # Offset current in nA
 }
@@ -270,11 +270,13 @@ train_data=all_data[:num_examples]
 test_data=all_data[num_examples:num_examples+100]
 # x_data = training['x'].reshape((n_input))
 spike_array =[[] for _ in range(28*28)]
+label_spike_array=[[] for _ in range(n_e)]
 gap_time= [0 for _ in range(28*28)]
 last_time= [0 for _ in range(28*28)]
 small_gap=20
 one_cnt=0
 for one_x_data in train_data:
+    label=one_x_data['output']
     one_x_data=one_x_data['input']
     for one_pixel_idx in range(28*28):
         # 对于每个点给一个时间序列
@@ -284,7 +286,8 @@ for one_x_data in train_data:
             spike_array[one_pixel_idx].append(1+one_cnt*(single_example_time+resting_time)+cur_gap) #起始时间+当前隔了多久
             cur_gap+=small_gap
             oridata-=35
-            break
+    for j in range(n_e//10):
+        label_spike_array[label*(n_e//10)+j].append(10+one_cnt*(single_example_time+resting_time))
     one_cnt += 1
 # print('$$$$$$ spikearray',spike_array[500])
 # print(spike_array)
@@ -300,32 +303,34 @@ neuron_groups_Ae = sim.Population(n_e,
                                   initial_values={'v': e_params['v_rest']},
                                   label='Ae'
                                   )
-neuron_groups_Ai = sim.Population(n_i,
-                                  sim.IF_cond_exp(**i_params),
-                                  initial_values={'v': i_params['v_rest']},
+neuron_groups_Ai = sim.Population(n_e,
+                                  sim.SpikeSourceArray(label_spike_array),
                                   label='Ai'
                                   )
 
+# label给的触发
 print('create recurrent connections')
-connections_AeAi = sim.Projection(neuron_groups_Ae,
+connections_AeAi = sim.Projection(
                                   neuron_groups_Ai,
+                                  neuron_groups_Ae,
                                   sim.OneToOneConnector(),
-                                  synapse_type=sim.StaticSynapse(weight=0.104, delay=1.0),
+                                  synapse_type=sim.StaticSynapse(weight=10.4, delay=1.0),
                                   receptor_type='excitatory'
                                   )
 # Ai -> Ae 的连接
 # connect_AiAe = 17.0*(np.ones([n_e,n_e]) - np.identity(n_e))
-connect_AiAe = []
-for i in range(n_e):
-    for j in range(n_i):
-        if not i == j:
-            connect_AiAe.append((i, j))
-connections_AiAe = sim.Projection(neuron_groups_Ai,
-                                  neuron_groups_Ae,
-                                  connector=sim.FromListConnector(connect_AiAe),
-                                  synapse_type=sim.StaticSynapse(weight=1.7, delay=1.0),
-                                  receptor_type='inhibitory'
-                                  )
+
+# connect_AiAe = []
+# for i in range(n_e):
+#     for j in range(n_i):
+#         if not i == j:
+#             connect_AiAe.append((i, j))
+# connections_AiAe = sim.Projection(neuron_groups_Ai,
+#                                   neuron_groups_Ae,
+#                                   connector=sim.FromListConnector(connect_AiAe),
+#                                   synapse_type=sim.StaticSynapse(weight=17, delay=1.0),
+#                                   receptor_type='inhibitory'
+#                                   )
 
 
 
@@ -342,9 +347,9 @@ print('create connections between X and A ')
 # stdp_initial_weights = sim.RandomDistribution(distribution='normal_clipped',low=0,high=1, mu=0.5, sigma=0.3)
 # print("Testing stdp initial weight random generator, rand value = ",str(stdp_initial_weights.next()))
 timing_rule = sim.SpikePairRule(tau_plus=8.0, tau_minus=2.0,  # 8,1
-                                A_plus=0.0005, A_minus=0.0005)  # 80,20
+                                A_plus=0.0625, A_minus=0.0625)  # 80,20
 weight_rule = sim.AdditiveWeightDependence(w_max=1, w_min=0)
-last_weight=np.load('nweight2.npy').reshape(-1)
+last_weight=np.load('nweight.npy').reshape(-1)
 # stdp = sim.STDPMechanism(timing_dependence=timing_rule,
 #                          weight_dependence=weight_rule,
 #                          weight=RandomDistribution(distribution='normal_clipped', low=0, high=1, mu=0.5, sigma=0.3),
@@ -449,13 +454,13 @@ respondlist=[]
 for i in range(100):#最后100个作为测试例子
     respond_neural_list=number2respond[num_examples-i-1]
     correct_label=train_data[num_examples-i-1]['output']
-    respondlist.append({correct_label:respond_neural_list})
+    respondlist.append({correct_label: respond_neural_list})
     history_cnt=[0]*10 #计算这些神经元在历史上响应过每个数字的次数总和
     for neural_idx in respond_neural_list:
         for j in range(10):
             history_cnt[j]+=spike_counts[neural_idx][j]
     for j in range(10):
-        history_cnt[j]/=(number2spikecnt[j]+1)
+        history_cnt[j]/=number2spikecnt[j]
     max_pro=0
     max_pro_idx=0
     for j in range(10):
@@ -468,7 +473,6 @@ for i in range(100):#最后100个作为测试例子
         correct_cnt+=1
 print('correct cnt',correct_cnt)
 np.save('respondlist.npy',respondlist)
-
 
 #
 # exc_v = neuron_groups_Ae.get_data("v")
