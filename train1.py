@@ -370,7 +370,7 @@ weight_rule = sim.AdditiveWeightDependence(w_max=1, w_min=0)
 # last_weight=np.load('nweight.npy').reshape(-1)
 stdp = sim.STDPMechanism(timing_dependence=timing_rule,
                          weight_dependence=weight_rule,
-                         weight=RandomDistribution(distribution='normal_clipped', low=0, high=0.01, mu=0.5, sigma=0.3),
+                         weight=RandomDistribution(distribution='normal_clipped', low=0, high=0.1, mu=0.5, sigma=0.3),
                          delay=1.0
                          )
 # stdp = sim.STDPMechanism(timing_dependence=timing_rule,
