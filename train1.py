@@ -282,10 +282,10 @@ for one_x_data in train_data:
         # 对于每个点给一个时间序列
         oridata=one_x_data[one_pixel_idx]
         cur_gap=0
-        while oridata>35:
+        while oridata>65:
             spike_array[one_pixel_idx].append(1+one_cnt*(single_example_time+resting_time)+cur_gap) #起始时间+当前隔了多久
             cur_gap+=small_gap
-            oridata-=35
+            oridata-=65
     for j in range(n_e//10):
         label_spike_array[label*(n_e//10)+j].append(10+one_cnt*(single_example_time+resting_time))
     one_cnt += 1
