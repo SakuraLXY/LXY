@@ -189,8 +189,8 @@ n_e = 100  # 兴奋层
 n_i = n_e  # 抑制层
 
 # 运行时间
-single_example_time = 350  # ms
-resting_time = 150
+single_example_time = 50  # ms
+resting_time = 50
 runtime = num_examples * (single_example_time + resting_time)
 
 weight_update_interval = 20
@@ -290,6 +290,19 @@ for one_x_data in train_data:
     for j in range(n_e//10):
         label_spike_array[label*(n_e//10)+j].append(10+one_cnt*(single_example_time+resting_time))
     one_cnt += 1
+for one_x_data in test_data: #最后加一百个作为测试的
+    label=one_x_data['output']
+    one_x_data=one_x_data['input']
+    for one_pixel_idx in range(28*28):
+        # 对于每个点给一个时间序列
+        oridata=one_x_data[one_pixel_idx]
+        cur_gap=0
+        while oridata>65:
+            spike_array[one_pixel_idx].append(5+one_cnt*(single_example_time+resting_time)+cur_gap) #起始时间+当前隔了多久
+            cur_gap+=small_gap
+            oridata-=65
+            break
+    one_cnt += 1
 # print('$$$$$$ spikearray',spike_array[500])
 # print(spike_array)
 
@@ -353,7 +366,7 @@ weight_rule = sim.AdditiveWeightDependence(w_max=1, w_min=0)
 # last_weight=np.load('nweight.npy').reshape(-1)
 stdp = sim.STDPMechanism(timing_dependence=timing_rule,
                          weight_dependence=weight_rule,
-                         weight=RandomDistribution(distribution='normal_clipped', low=0, high=0.1, mu=0.5, sigma=0.3),
+                         weight=RandomDistribution(distribution='normal_clipped', low=0, high=0.01, mu=0.5, sigma=0.3),
                          delay=1.0
                          )
 # stdp = sim.STDPMechanism(timing_dependence=timing_rule,
@@ -450,11 +463,16 @@ print(num_labels)
 
 # -----------test the last 100 numbers------------
 #
+train_respondlist=[]
+for i in range(num_examples):
+    respond_neural_list=number2respond[i]
+    correct_label=train_data[i]['output']
+    train_respondlist.append({correct_label: respond_neural_list})
 correct_cnt=0
 respondlist=[]
-for i in range(100):#最后100个作为测试例子
-    respond_neural_list=number2respond[num_examples-i-1]
-    correct_label=train_data[num_examples-i-1]['output']
+for i in range(len(test_data)):#最后100个作为测试例子
+    respond_neural_list=number2respond[num_examples+i]
+    correct_label=test_data[i]['output']
     respondlist.append({correct_label: respond_neural_list})
     history_cnt=[0]*10 #计算这些神经元在历史上响应过每个数字的次数总和
     for neural_idx in respond_neural_list:
@@ -474,7 +492,7 @@ for i in range(100):#最后100个作为测试例子
         correct_cnt+=1
 print('correct cnt',correct_cnt)
 np.save('respondlist.npy',respondlist)
-
+np.save('train_respondlist.npy',train_respondlist)
 #
 # exc_v = neuron_groups_Ae.get_data("v")
 # exc_ge = neuron_groups_Ae.get_data('gsyn_exc')
