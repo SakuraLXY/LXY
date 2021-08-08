@@ -180,7 +180,7 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 6000  #  一次使用训练例子的数量。再多就不行了
+num_examples = 300  #  一次使用训练例子的数量。再多就不行了
 turns=0 # 这是第几次训练
 
 ending = ''
@@ -288,7 +288,11 @@ for one_x_data in train_data:
             oridata-=65
             break
     for j in range(n_e//10):
-        label_spike_array[label*(n_e//10)+j].append(10+one_cnt*(single_example_time+resting_time))
+        label_spike_array[label*(n_e//10)+j].append(10+one_cnt*(single_example_time+resting_time)) #对于那些应该响应这个数字的，我们让它在接受图片输入后激活
+        for k in range(10):
+            if k==label:
+                continue
+            label_spike_array[label * (n_e // 10) + j].append(1 + one_cnt * (single_example_time + resting_time)) # 对于那些不该响应这个数字的，我们让它在接受图片前就激活
     one_cnt += 1
 for one_x_data in test_data: #最后加一百个作为测试的
     label=one_x_data['output']
@@ -431,13 +435,14 @@ for i in range(n_e):
 #         print(0,i,int(j)%500)
 #         print(1,i,class_history[int(j)//500])
         # class_history是历史上选择展示用的数字
-        if recorded_map[i].get(int(j)//(single_example_time+resting_time),-1)!=-1:
+        corresponding_number_idx=(int(j-5)//(single_example_time+resting_time)) #因为是在过了5ms后才会给图片信号，在此之前如果有那就是抑制用的激活
+        if recorded_map[i].get(corresponding_number_idx,-1)!=-1:
             continue
-        recorded_map[i][int(j)//(single_example_time+resting_time)]=1
-        number2respond[int(j)//(single_example_time+resting_time)].append(i)
-        if int(j)//(single_example_time+resting_time)>=num_examples-100: #最后的100个就不统计了，拿来作为测试样例
+        recorded_map[i][corresponding_number_idx]=1
+        number2respond[corresponding_number_idx].append(i)
+        if corresponding_number_idx>=num_examples-100: #最后的100个就不统计了，拿来作为测试样例
             continue
-        spike_counts[i][all_data[int(j)//(single_example_time+resting_time)]['output']]+=1
+        spike_counts[i][all_data[corresponding_number_idx]['output']]+=1
 
 # for i in range(num_examples):
 #     print('$$$$$$ number %d -label %d,respond'%(i,train_data[i]['output']),number2respond[i])
