@@ -180,7 +180,7 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 300  #  一次使用训练例子的数量。再多就不行了
+num_examples = 8000  #  一次使用训练例子的数量。再多就不行了
 turns=0 # 这是第几次训练
 
 ending = ''
@@ -332,7 +332,7 @@ connections_AeAi = sim.Projection(
                                   neuron_groups_Ai,
                                   neuron_groups_Ae,
                                   sim.OneToOneConnector(),
-                                  synapse_type=sim.StaticSynapse(weight=10.4, delay=1.0),
+                                  synapse_type=sim.StaticSynapse(weight=16.4, delay=1.0),
                                   receptor_type='excitatory'
                                   )
 # Ai -> Ae 的连接
@@ -365,7 +365,7 @@ print('create connections between X and A ')
 # stdp_initial_weights = sim.RandomDistribution(distribution='normal_clipped',low=0,high=1, mu=0.5, sigma=0.3)
 # print("Testing stdp initial weight random generator, rand value = ",str(stdp_initial_weights.next()))
 timing_rule = sim.SpikePairRule(tau_plus=8.0, tau_minus=2.0,  # 8,1
-                                A_plus=0.0125, A_minus=0.0125)  # 80,20
+                                A_plus=0.0625, A_minus=0.0625)  # 80,20
 weight_rule = sim.AdditiveWeightDependence(w_max=1, w_min=0)
 # last_weight=np.load('nweight.npy').reshape(-1)
 stdp = sim.STDPMechanism(timing_dependence=timing_rule,
