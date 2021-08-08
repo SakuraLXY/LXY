@@ -191,7 +191,7 @@ n_i = n_e  # 抑制层
 # 运行时间
 single_example_time = 50  # ms
 resting_time = 50
-runtime = num_examples * (single_example_time + resting_time)
+runtime = (num_examples+100) * (single_example_time + resting_time)
 
 weight_update_interval = 20
 save_connections_interval = 1000
