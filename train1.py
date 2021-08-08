@@ -283,9 +283,10 @@ for one_x_data in train_data:
         oridata=one_x_data[one_pixel_idx]
         cur_gap=0
         while oridata>65:
-            spike_array[one_pixel_idx].append(1+one_cnt*(single_example_time+resting_time)+cur_gap) #起始时间+当前隔了多久
+            spike_array[one_pixel_idx].append(5+one_cnt*(single_example_time+resting_time)+cur_gap) #起始时间+当前隔了多久
             cur_gap+=small_gap
             oridata-=65
+            break
     for j in range(n_e//10):
         label_spike_array[label*(n_e//10)+j].append(10+one_cnt*(single_example_time+resting_time))
     one_cnt += 1
@@ -349,17 +350,17 @@ print('create connections between X and A ')
 timing_rule = sim.SpikePairRule(tau_plus=8.0, tau_minus=2.0,  # 8,1
                                 A_plus=0.0625, A_minus=0.0625)  # 80,20
 weight_rule = sim.AdditiveWeightDependence(w_max=1, w_min=0)
-last_weight=np.load('nweight.npy').reshape(-1)
-# stdp = sim.STDPMechanism(timing_dependence=timing_rule,
-#                          weight_dependence=weight_rule,
-#                          weight=RandomDistribution(distribution='normal_clipped', low=0, high=1, mu=0.5, sigma=0.3),
-#                          delay=1.0
-#                          )
+# last_weight=np.load('nweight.npy').reshape(-1)
 stdp = sim.STDPMechanism(timing_dependence=timing_rule,
                          weight_dependence=weight_rule,
-                         weight=last_weight,
+                         weight=RandomDistribution(distribution='normal_clipped', low=0, high=1, mu=0.5, sigma=0.3),
                          delay=1.0
                          )
+# stdp = sim.STDPMechanism(timing_dependence=timing_rule,
+#                          weight_dependence=weight_rule,
+#                          weight=last_weight,
+#                          delay=1.0
+#                          )
 connections_XeAe = sim.Projection(presynaptic_population = input_groups_Xe,
                                   postsynaptic_population=neuron_groups_Ae,
                                   connector=sim.AllToAllConnector(),
