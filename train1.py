@@ -435,7 +435,7 @@ for i in range(n_e):
 #         print(0,i,int(j)%500)
 #         print(1,i,class_history[int(j)//500])
         # class_history是历史上选择展示用的数字
-        corresponding_number_idx=(int(j-5)//(single_example_time+resting_time)) #因为是在过了5ms后才会给图片信号，在此之前如果有那就是抑制用的激活
+        corresponding_number_idx=((int(j)-5)//(single_example_time+resting_time)) #因为是在过了5ms后才会给图片信号，在此之前如果有那就是抑制用的激活
         if recorded_map[i].get(corresponding_number_idx,-1)!=-1:
             continue
         recorded_map[i][corresponding_number_idx]=1
