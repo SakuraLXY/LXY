@@ -366,7 +366,7 @@ weight_rule = sim.AdditiveWeightDependence(w_max=1, w_min=0)
 # last_weight=np.load('nweight.npy').reshape(-1)
 stdp = sim.STDPMechanism(timing_dependence=timing_rule,
                          weight_dependence=weight_rule,
-                         weight=RandomDistribution(distribution='normal_clipped', low=0, high=0.01, mu=0.5, sigma=0.3),
+                         weight=RandomDistribution(distribution='normal_clipped', low=0, high=0.05, mu=0.5, sigma=0.3),
                          delay=1.0
                          )
 # stdp = sim.STDPMechanism(timing_dependence=timing_rule,
@@ -421,7 +421,7 @@ spikes = exc_spikes.segments[0].spiketrains
 # print(spikes)
 spike_counts = [{i:0 for i in range(10)} for i in range(n_e)] # spike_counts[i][j] 第i个神经元在 数字j上面的spikes数量
 recorded_map=[{}  for _ in range(n_e)]
-number2respond=[[] for _ in range(num_examples+1)]
+number2respond=[[] for _ in range(num_examples+1+len(test_data))]
 
 numpy_spikes=[[float(j) for j in i] for i in spikes]
 np.save('spikes.npy',numpy_spikes)
