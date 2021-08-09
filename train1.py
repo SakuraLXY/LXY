@@ -441,7 +441,7 @@ for i in range(n_e):
             continue
         recorded_map[i][corresponding_number_idx]=1
         number2respond[corresponding_number_idx].append(i)
-        if corresponding_number_idx>=num_examples-100: #最后的100个就不统计了，拿来作为测试样例
+        if corresponding_number_idx>=num_examples: #最后的100个就不统计了，拿来作为测试样例
             continue
         spike_counts[i][all_data[corresponding_number_idx]['output']]+=1
 
@@ -485,7 +485,7 @@ for i in range(len(test_data)):#最后100个作为测试例子
         for j in range(10):
             history_cnt[j]+=spike_counts[neural_idx][j]
     for j in range(10):
-        history_cnt[j]/=number2spikecnt[j]
+        history_cnt[j]/=(number2spikecnt[j]+1)
     max_pro=0
     max_pro_idx=0
     for j in range(10):
