@@ -180,7 +180,7 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 50  #  一次使用训练例子的数量。再多就不行了
+num_examples = 100  #  一次使用训练例子的数量。再多就不行了
 turns=0 # 这是第几次训练
 
 ending = ''
@@ -367,7 +367,7 @@ print('create connections between X and A ')
 timing_rule = sim.SpikePairRule(tau_plus=8.0, tau_minus=2.0,  # 8,1
                                 A_plus=0.0125, A_minus=0.0125)  # 80,20
 weight_rule = sim.AdditiveWeightDependence(w_max=0.5, w_min=0)
-last_weight=np.load('nweight.npy').reshape(-1)
+last_weight=np.load('nweight2.npy').reshape(-1)
 stdp = sim.STDPMechanism(timing_dependence=timing_rule,
                          weight_dependence=weight_rule,
                          weight=last_weight,
