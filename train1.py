@@ -161,7 +161,7 @@ def get_new_assignments(result_monitor, input_numbers):
     return assignments
 
 
-sim.setup(timestep=1, time_scale_factor=10)
+sim.setup(timestep=1, time_scale_factor=20)
 # sim.setup()
 
 # ------------------------------------------------------------------------------
@@ -283,12 +283,12 @@ for one_x_data in train_data:
         oridata=one_x_data[one_pixel_idx]
         cur_gap=0
         while oridata>65:
-            spike_array[one_pixel_idx].append(5+one_cnt*(single_example_time+resting_time)+cur_gap) #起始时间+当前隔了多久
+            spike_array[one_pixel_idx].append(6+one_cnt*(single_example_time+resting_time)+cur_gap) #起始时间+当前隔了多久
             cur_gap+=small_gap
             oridata-=65
             break
     for j in range(n_e//10):
-        label_spike_array[label*(n_e//10)+j].append(10+one_cnt*(single_example_time+resting_time)) #对于那些应该响应这个数字的，我们让它在接受图片输入后激活
+        label_spike_array[label*(n_e//10)+j].append(11+one_cnt*(single_example_time+resting_time)) #对于那些应该响应这个数字的，我们让它在接受图片输入后激活
         for k in range(10):
             if k==label:
                 continue
@@ -365,7 +365,7 @@ print('create connections between X and A ')
 # stdp_initial_weights = sim.RandomDistribution(distribution='normal_clipped',low=0,high=1, mu=0.5, sigma=0.3)
 # print("Testing stdp initial weight random generator, rand value = ",str(stdp_initial_weights.next()))
 timing_rule = sim.SpikePairRule(tau_plus=18.0, tau_minus=18.0,  # 8,1
-                                A_plus=0.0625, A_minus=0.0625)  # 80,20
+                                A_plus=0.0625, A_minus=0.02)  # 80,20
 weight_rule = sim.AdditiveWeightDependence(w_max=1, w_min=0)
 # last_weight=np.load('snnweight.npy').reshape(-1)
 # stdp = sim.STDPMechanism(timing_dependence=timing_rule,
