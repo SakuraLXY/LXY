@@ -161,7 +161,7 @@ def get_new_assignments(result_monitor, input_numbers):
     return assignments
 
 
-sim.setup(timestep=1, time_scale_factor=1)
+sim.setup(timestep=1, time_scale_factor=10)
 # sim.setup()
 
 # ------------------------------------------------------------------------------
@@ -180,7 +180,7 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 1000  #  一次使用训练例子的数量。再多就不行了
+num_examples = 200  #  一次使用训练例子的数量。再多就不行了
 turns=0 # 这是第几次训练
 
 ending = ''
