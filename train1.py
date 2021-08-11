@@ -288,13 +288,14 @@ for one_x_data in train_data:
             oridata-=65
             break
     for j in range(n_e//10):
-        label_spike_array[label*(n_e//10)+j].append(23+one_cnt*(single_example_time+resting_time)) #对于那些应该响应这个数字的，我们让它在接受图片输入后激活
+        if random.randint(0,10)<5:
+            label_spike_array[label*(n_e//10)+j].append(23+one_cnt*(single_example_time+resting_time)) #对于那些应该响应这个数字的，我们让它在接受图片输入后激活
         for k in range(10):
             if k==label:
                 continue
             label_spike_array[k * (n_e // 10) + j].append(7 + one_cnt * (single_example_time + resting_time)) # 对于那些不该响应这个数字的，我们让它在接受图片前就激活
-            # label_spike_array[k * (n_e // 10) + j].append(
-            #     10 + one_cnt * (single_example_time + resting_time))  # 对于那些不该响应这个数字的，我们让它在接受图片前就激活
+            label_spike_array[k * (n_e // 10) + j].append(
+                10 + one_cnt * (single_example_time + resting_time))  # 对于那些不该响应这个数字的，我们让它在接受图片前就激活
     one_cnt += 1
 for one_x_data in test_data: #最后加一百个作为测试的
     label=one_x_data['output']
@@ -367,8 +368,8 @@ print('create connections between X and A ')
 # stdp_initial_weights = sim.RandomDistribution(distribution='normal_clipped',low=0,high=1, mu=0.5, sigma=0.3)
 # print("Testing stdp initial weight random generator, rand value = ",str(stdp_initial_weights.next()))
 timing_rule = sim.SpikePairRule(tau_plus=18.0, tau_minus=18.0,  # 8,1
-                                A_plus=0.0625, A_minus=0.125)  # 80,20
-weight_rule = sim.AdditiveWeightDependence(w_max=1, w_min=0)
+                                A_plus=0.0625, A_minus=0.0625)  # 80,20
+weight_rule = sim.AdditiveWeightDependence(w_max=0.5, w_min=0)
 # last_weight=np.load('snnweight.npy').reshape(-1)
 # stdp = sim.STDPMechanism(timing_dependence=timing_rule,
 #                          weight_dependence=weight_rule,
@@ -377,7 +378,7 @@ weight_rule = sim.AdditiveWeightDependence(w_max=1, w_min=0)
 #                          )
 stdp = sim.STDPMechanism(timing_dependence=timing_rule,
                          weight_dependence=weight_rule,
-                         weight=RandomDistribution(distribution='normal_clipped', low=0, high=1, mu=0.5, sigma=0.3),
+                         weight=RandomDistribution(distribution='normal_clipped', low=0, high=0.5, mu=0.5, sigma=0.3),
                          delay=1.0
                          )
 connections_XeAe = sim.Projection(presynaptic_population = input_groups_Xe,
