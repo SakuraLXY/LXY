@@ -180,7 +180,7 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 400  #  一次使用训练例子的数量。再多就不行了
+num_examples = 100  #  一次使用训练例子的数量。再多就不行了
 turns=0 # 这是第几次训练
 
 ending = ''
@@ -368,19 +368,19 @@ print('create connections between X and A ')
 # stdp_initial_weights = sim.RandomDistribution(distribution='normal_clipped',low=0,high=1, mu=0.5, sigma=0.3)
 # print("Testing stdp initial weight random generator, rand value = ",str(stdp_initial_weights.next()))
 timing_rule = sim.SpikePairRule(tau_plus=18.0, tau_minus=18.0,  # 8,1
-                                A_plus=0.0625, A_minus=0.0625)  # 80,20
+                                A_plus=0.0025, A_minus=0.0025)  # 80,20
 weight_rule = sim.AdditiveWeightDependence(w_max=0.5, w_min=0)
-# last_weight=np.load('snnweight.npy').reshape(-1)
-# stdp = sim.STDPMechanism(timing_dependence=timing_rule,
-#                          weight_dependence=weight_rule,
-#                          weight=last_weight,
-#                          delay=1.0
-#                          )
+last_weight=np.load('nweight2.npy').reshape(-1)
 stdp = sim.STDPMechanism(timing_dependence=timing_rule,
                          weight_dependence=weight_rule,
-                         weight=RandomDistribution(distribution='normal_clipped', low=0, high=0.5, mu=0.5, sigma=0.3),
+                         weight=last_weight,
                          delay=1.0
                          )
+# stdp = sim.STDPMechanism(timing_dependence=timing_rule,
+#                          weight_dependence=weight_rule,
+#                          weight=RandomDistribution(distribution='normal_clipped', low=0, high=0.5, mu=0.5, sigma=0.3),
+#                          delay=1.0
+#                          )
 connections_XeAe = sim.Projection(presynaptic_population = input_groups_Xe,
                                   postsynaptic_population=neuron_groups_Ae,
                                   connector=sim.AllToAllConnector(),
