@@ -180,7 +180,7 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 50  #  一次使用训练例子的数量。再多就不行了
+num_examples = 8000  #  一次使用训练例子的数量。再多就不行了
 turns=0 # 这是第几次训练
 
 ending = ''
@@ -288,14 +288,15 @@ for one_x_data in train_data:
             oridata-=65
             break
     for j in range(n_e//10):
-        if random.randint(0,10)<5:
-            label_spike_array[label*(n_e//10)+j].append(23+one_cnt*(single_example_time+resting_time)) #对于那些应该响应这个数字的，我们让它在接受图片输入后激活
         for k in range(10):
             if k==label:
-                continue
-            label_spike_array[k * (n_e // 10) + j].append(7 + one_cnt * (single_example_time + resting_time)) # 对于那些不该响应这个数字的，我们让它在接受图片前就激活
-            label_spike_array[k * (n_e // 10) + j].append(
-                10 + one_cnt * (single_example_time + resting_time))  # 对于那些不该响应这个数字的，我们让它在接受图片前就激活
+                if random.randint(0, 10) < 3:
+                    label_spike_array[k * (n_e // 10) + j].append(
+                        20 + one_cnt * (single_example_time + resting_time))  # 对于那些应该响应这个数字的，我们让它在接受图片输入后激活
+            else:
+            # label_spike_array[k * (n_e // 10) + j].append(7 + one_cnt * (single_example_time + resting_time)) # 对于那些不该响应这个数字的，我们让它在接受图片前就激活
+                label_spike_array[k * (n_e // 10) + j].append(
+                    10 + one_cnt * (single_example_time + resting_time))  # 对于那些不该响应这个数字的，我们让它在接受图片前就激活
     one_cnt += 1
 for one_x_data in test_data: #最后加一百个作为测试的
     label=one_x_data['output']
@@ -369,18 +370,18 @@ print('create connections between X and A ')
 # print("Testing stdp initial weight random generator, rand value = ",str(stdp_initial_weights.next()))
 timing_rule = sim.SpikePairRule(tau_plus=18.0, tau_minus=18.0,  # 8,1
                                 A_plus=0.0025, A_minus=0.0025)  # 80,20
-weight_rule = sim.AdditiveWeightDependence(w_max=0.5, w_min=0)
-last_weight=np.load('normalize_weight.npy').reshape(-1)
-stdp = sim.STDPMechanism(timing_dependence=timing_rule,
-                         weight_dependence=weight_rule,
-                         weight=last_weight,
-                         delay=1.0
-                         )
+weight_rule = sim.AdditiveWeightDependence(w_max=0.2, w_min=0)
+# last_weight=np.load('normalize_weight.npy').reshape(-1)
 # stdp = sim.STDPMechanism(timing_dependence=timing_rule,
 #                          weight_dependence=weight_rule,
-#                          weight=RandomDistribution(distribution='normal_clipped', low=0, high=0.5, mu=0.5, sigma=0.3),
+#                          weight=last_weight,
 #                          delay=1.0
 #                          )
+stdp = sim.STDPMechanism(timing_dependence=timing_rule,
+                         weight_dependence=weight_rule,
+                         weight=RandomDistribution(distribution='normal_clipped', low=0, high=0.2, mu=0.5, sigma=0.3),
+                         delay=1.0
+                         )
 connections_XeAe = sim.Projection(presynaptic_population = input_groups_Xe,
                                   postsynaptic_population=neuron_groups_Ae,
                                   connector=sim.AllToAllConnector(),
