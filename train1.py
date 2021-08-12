@@ -180,7 +180,7 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 2000  #  一次使用训练例子的数量。再多就不行了
+num_examples = 400  #  一次使用训练例子的数量。再多就不行了
 turns=0 # 这是第几次训练
 
 ending = ''
@@ -369,7 +369,7 @@ print('create connections between X and A ')
 # stdp_initial_weights = sim.RandomDistribution(distribution='normal_clipped',low=0,high=1, mu=0.5, sigma=0.3)
 # print("Testing stdp initial weight random generator, rand value = ",str(stdp_initial_weights.next()))
 timing_rule = sim.SpikePairRule(tau_plus=18.0, tau_minus=18.0,  # 8,1
-                                A_plus=0.0025, A_minus=0.0025)  # 80,20
+                                A_plus=0.05, A_minus=0.05)  # 80,20
 weight_rule = sim.AdditiveWeightDependence(w_max=0.2, w_min=0)
 # last_weight=np.load('normalize_weight.npy').reshape(-1)
 # stdp = sim.STDPMechanism(timing_dependence=timing_rule,
