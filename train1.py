@@ -180,7 +180,7 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 400  #  一次使用训练例子的数量。再多就不行了
+num_examples = 4000  #  一次使用训练例子的数量。再多就不行了
 turns=0 # 这是第几次训练
 
 ending = ''
@@ -208,7 +208,7 @@ e_params = {
     'tau_syn_I': 2.0,  # Decay time of the inhibitory synaptic conductance in ms.
     'e_rev_E': 0.0,  # Reversal potential for excitatory input in mV
     'e_rev_I': -100.0,  # Reversal potential for inhibitory input in mV
-    'v_thresh': -12.0,  # Spike threshold in mV.
+    'v_thresh': -72.0,  # Spike threshold in mV.
     'v_reset': -65.0,  # Reset potential after a spike in mV.
     'i_offset': 0.0,  # Offset current in nA
 }
