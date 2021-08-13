@@ -290,7 +290,7 @@ for one_x_data in train_data:
     for j in range(n_e//10):
         for k in range(10):
             if k==label:
-                if random.randint(0, 10) < 6:
+                if random.randint(0, 10) < 4:
                     label_spike_array[k * (n_e // 10) + j].append(
                         18 + one_cnt * (single_example_time + resting_time))  # 对于那些应该响应这个数字的，我们让它在接受图片输入后激活
                     # label_spike_array[k * (n_e // 10) + j].append(
