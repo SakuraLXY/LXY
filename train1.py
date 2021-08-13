@@ -180,7 +180,7 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 1000  #  一次使用训练例子的数量。再多就不行了
+num_examples = 300  #  一次使用训练例子的数量。再多就不行了
 turns=0 # 这是第几次训练
 
 ending = ''
@@ -208,7 +208,7 @@ e_params = {
     'tau_syn_I': 2.0,  # Decay time of the inhibitory synaptic conductance in ms.
     'e_rev_E': 0.0,  # Reversal potential for excitatory input in mV
     'e_rev_I': -100.0,  # Reversal potential for inhibitory input in mV
-    'v_thresh': -22.0,  # Spike threshold in mV.
+    'v_thresh': -32.0,  # Spike threshold in mV.
     'v_reset': -65.0,  # Reset potential after a spike in mV.
     'i_offset': 0.0,  # Offset current in nA
 }
@@ -336,7 +336,7 @@ connections_AeAi = sim.Projection(
                                   neuron_groups_Ai,
                                   neuron_groups_Ae,
                                   sim.OneToOneConnector(),
-                                  synapse_type=sim.StaticSynapse(weight=26.4, delay=1.0),
+                                  synapse_type=sim.StaticSynapse(weight=10.4, delay=1.0),
                                   receptor_type='excitatory'
                                   )
 # Ai -> Ae 的连接
