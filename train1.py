@@ -208,7 +208,7 @@ e_params = {
     'tau_syn_I': 2.0,  # Decay time of the inhibitory synaptic conductance in ms.
     'e_rev_E': 0.0,  # Reversal potential for excitatory input in mV
     'e_rev_I': -100.0,  # Reversal potential for inhibitory input in mV
-    'v_thresh': -32.0,  # Spike threshold in mV.
+    'v_thresh': -12.0,  # Spike threshold in mV.
     'v_reset': -65.0,  # Reset potential after a spike in mV.
     'i_offset': 0.0,  # Offset current in nA
 }
