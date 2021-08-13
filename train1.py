@@ -180,7 +180,7 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 200  #  一次使用训练例子的数量。再多就不行了
+num_examples = 1000  #  一次使用训练例子的数量。再多就不行了
 turns=0 # 这是第几次训练
 
 ending = ''
@@ -291,6 +291,8 @@ for one_x_data in train_data:
         for k in range(10):
             if k==label:
                 if random.randint(0, 10) < 3:
+                    label_spike_array[k * (n_e // 10) + j].append(
+                        18 + one_cnt * (single_example_time + resting_time))  # 对于那些应该响应这个数字的，我们让它在接受图片输入后激活
                     label_spike_array[k * (n_e // 10) + j].append(
                         20 + one_cnt * (single_example_time + resting_time))  # 对于那些应该响应这个数字的，我们让它在接受图片输入后激活
             else:
