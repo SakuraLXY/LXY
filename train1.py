@@ -297,7 +297,7 @@ for one_x_data in train_data:
                     #     20 + one_cnt * (single_example_time + resting_time))  # 对于那些应该响应这个数字的，我们让它在接受图片输入后激活
             else:
             # label_spike_array[k * (n_e // 10) + j].append(7 + one_cnt * (single_example_time + resting_time)) # 对于那些不该响应这个数字的，我们让它在接受图片前就激活
-                if random.randint(0,10)<9:
+                if random.randint(0,10)<10:
                     label_spike_array[k * (n_e // 10) + j].append(
                         12 + one_cnt * (single_example_time + resting_time))  # 对于那些不该响应这个数字的，我们让它在接受图片前就激活
     one_cnt += 1
