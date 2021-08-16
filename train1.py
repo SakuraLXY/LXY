@@ -374,7 +374,7 @@ print('create connections between X and A ')
 timing_rule = sim.SpikePairRule(tau_plus=18.0, tau_minus=18.0,  # 8,1
                                 A_plus=0.001, A_minus=0.001)  # 80,20
 weight_rule = sim.AdditiveWeightDependence(w_max=0.3, w_min=0)
-last_weight=np.load('normalize_weight.npy').reshape(-1)
+last_weight=np.load('rweight.npy').reshape(-1)
 stdp = sim.STDPMechanism(timing_dependence=timing_rule,
                          weight_dependence=weight_rule,
                          weight=last_weight,
