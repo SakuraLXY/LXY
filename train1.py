@@ -185,7 +185,7 @@ turns=0 # 这是第几次训练
 
 ending = ''
 n_input = 784  # 输入层，即28*28
-n_e = 100  # 兴奋层
+n_e = 900  # 兴奋层
 n_i = n_e  # 抑制层
 
 # 运行时间
@@ -374,7 +374,7 @@ print('create connections between X and A ')
 timing_rule = sim.SpikePairRule(tau_plus=18.0, tau_minus=18.0,  # 8,1
                                 A_plus=0.001, A_minus=0.001)  # 80,20
 weight_rule = sim.AdditiveWeightDependence(w_max=0.3, w_min=0)
-last_weight=np.load('rweight.npy').reshape(-1)
+last_weight=np.load('weight900.npy').reshape(-1)
 stdp = sim.STDPMechanism(timing_dependence=timing_rule,
                          weight_dependence=weight_rule,
                          weight=last_weight,
@@ -458,7 +458,7 @@ for i in range(n_e):
 #     print('neural %d respond to '%i,recorded_map[i])
 
 # print('train data',train_data)
-labels = [0]*100
+labels = [0]*n_e
 number2spikecnt=[0]*10  #一个数字激发过的火花数，后面用来算概率
 for i in range(len(spike_counts)): #labels[i] 第i个神经元被分配到的标签？等于它响应最多的那个数字
     print('spike_counts of %d'%(i),spike_counts[i])
