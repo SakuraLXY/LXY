@@ -190,7 +190,7 @@ n_i = n_e  # 抑制层
 
 # 运行时间
 single_example_time = 50  # ms
-resting_time = 100
+resting_time = 150
 runtime = (num_examples+100) * (single_example_time + resting_time)
 
 weight_update_interval = 20
@@ -309,11 +309,11 @@ for one_x_data in test_data: #最后加一百个作为测试的
         oridata=one_x_data[one_pixel_idx]
         cur_gap=0
         # 每5ms随机激发一些像素点
-        while oridata>50:
-            if random.randint(1,100)<60: #有60%概率搞一个激发
+        while oridata>20:
+            if random.randint(1,100)<30: #有60%概率搞一个激发
                 spike_array[one_pixel_idx].append(15+one_cnt*(single_example_time+resting_time)+cur_gap) #起始时间+当前隔了多久
             cur_gap+=small_gap
-            oridata-=50
+            oridata-=20
 
     one_cnt += 1
 # print('$$$$$$ spikearray',spike_array[500])
