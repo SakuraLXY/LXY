@@ -273,7 +273,7 @@ spike_array =[[] for _ in range(28*28)]
 label_spike_array=[[] for _ in range(n_e)]
 gap_time= [0 for _ in range(28*28)]
 last_time= [0 for _ in range(28*28)]
-small_gap=20
+small_gap=5
 one_cnt=0
 for one_x_data in train_data:
     label=one_x_data['output']
@@ -308,11 +308,13 @@ for one_x_data in test_data: #最后加一百个作为测试的
         # 对于每个点给一个时间序列
         oridata=one_x_data[one_pixel_idx]
         cur_gap=0
-        while oridata>65:
-            spike_array[one_pixel_idx].append(15+one_cnt*(single_example_time+resting_time)+cur_gap) #起始时间+当前隔了多久
+        # 每5ms随机激发一些像素点
+        while oridata>50:
+            if random.randint(1,100)<30: #有30%概率搞一个激发
+                spike_array[one_pixel_idx].append(15+one_cnt*(single_example_time+resting_time)+cur_gap) #起始时间+当前隔了多久
             cur_gap+=small_gap
-            oridata-=65
-            break
+            oridata-=50
+            
     one_cnt += 1
 # print('$$$$$$ spikearray',spike_array[500])
 # print(spike_array)
@@ -447,7 +449,7 @@ for i in range(n_e):
         if recorded_map[i].get(corresponding_number_idx,-1)!=-1:
             continue
         recorded_map[i][corresponding_number_idx]=1
-        number2respond[corresponding_number_idx].append(i)
+        number2respond[corresponding_number_idx].append((i,(int(j)-15)))
         if corresponding_number_idx>=num_examples: #最后的100个就不统计了，拿来作为测试样例
             continue
         spike_counts[i][all_data[corresponding_number_idx]['output']]+=1
@@ -487,22 +489,7 @@ for i in range(len(test_data)):#最后100个作为测试例子
     respond_neural_list=number2respond[num_examples+i]
     correct_label=test_data[i]['output']
     respondlist.append({correct_label: respond_neural_list})
-    history_cnt=[0]*10 #计算这些神经元在历史上响应过每个数字的次数总和
-    for neural_idx in respond_neural_list:
-        for j in range(10):
-            history_cnt[j]+=spike_counts[neural_idx][j]
-    for j in range(10):
-        history_cnt[j]/=(number2spikecnt[j]+1)
-    max_pro=0
-    max_pro_idx=0
-    for j in range(10):
-        if history_cnt[j]>max_pro:
-            max_pro=history_cnt[j]
-            max_pro_idx=j
-    print('test_correct_label',correct_label,'predict_label',max_pro_idx)
-    print('probability',history_cnt)
-    if max_pro_idx==correct_label:
-        correct_cnt+=1
+
 print('correct cnt',correct_cnt)
 np.save('respondlist.npy',respondlist)
 np.save('train_respondlist.npy',train_respondlist)
