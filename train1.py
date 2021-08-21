@@ -181,6 +181,7 @@ data_path = './'
 
 weight_path = data_path + 'random/'
 num_examples = 1  #  一次使用训练例子的数量。再多就不行了
+test_examples=1000
 turns=0 # 这是第几次训练
 
 ending = ''
@@ -191,7 +192,7 @@ n_i = n_e  # 抑制层
 # 运行时间
 single_example_time = 50  # ms
 resting_time = 250
-runtime = (num_examples+100) * (single_example_time + resting_time)
+runtime = (num_examples+test_examples) * (single_example_time + resting_time)
 
 weight_update_interval = 20
 save_connections_interval = 1000
@@ -208,7 +209,7 @@ e_params = {
     'tau_syn_I': 2.0,  # Decay time of the inhibitory synaptic conductance in ms.
     'e_rev_E': 0.0,  # Reversal potential for excitatory input in mV
     'e_rev_I': -100.0,  # Reversal potential for inhibitory input in mV
-    'v_thresh': -17.0,  # Spike threshold in mV.
+    'v_thresh': -22.0,  # Spike threshold in mV.
     'v_reset': -65.0,  # Reset potential after a spike in mV.
     'i_offset': 0.0,  # Offset current in nA
 }
@@ -267,7 +268,7 @@ all_data= [{'input':x_data[j],'output':training['y'][j][0] }for j in range(60000
 random.seed=0
 random.shuffle(all_data)
 train_data=all_data[:num_examples]
-test_data=all_data[num_examples:num_examples+100]
+test_data=all_data[num_examples:num_examples+test_examples]
 # x_data = training['x'].reshape((n_input))
 spike_array =[[] for _ in range(28*28)]
 label_spike_array=[[] for _ in range(n_e)]
