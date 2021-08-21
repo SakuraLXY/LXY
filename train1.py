@@ -181,7 +181,7 @@ data_path = './'
 
 weight_path = data_path + 'random/'
 num_examples = 1  #  一次使用训练例子的数量。再多就不行了
-test_examples=100
+test_examples=1000
 turns=0 # 这是第几次训练
 
 ending = ''
