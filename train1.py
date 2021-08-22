@@ -311,7 +311,7 @@ for one_x_data in test_data: #最后加一百个作为测试的
         cur_gap=0
         # 每5ms随机激发一些像素点
         while oridata>20:
-            if random.randint(1,100)<80: #有60%概率搞一个激发
+            if random.randint(1,100)<70: #有60%概率搞一个激发
                 spike_array[one_pixel_idx].append(15+one_cnt*(single_example_time+resting_time)+cur_gap) #起始时间+当前隔了多久
             cur_gap+=small_gap
             oridata-=20
