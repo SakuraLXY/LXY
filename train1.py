@@ -180,7 +180,7 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 50  #  一次使用训练例子的数量。再多就不行了
+num_examples = 600  #  一次使用训练例子的数量
 turns=0 # 这是第几次训练
 
 ending = ''
@@ -190,8 +190,8 @@ n_i = n_e  # 抑制层
 
 # 运行时间
 single_example_time = 50  # ms
-resting_time = 250
-runtime = (num_examples+100) * (single_example_time + resting_time)
+resting_time = 150
+runtime = (num_examples) * (single_example_time + resting_time)
 
 weight_update_interval = 20
 save_connections_interval = 1000
@@ -301,19 +301,19 @@ for one_x_data in train_data:
                     label_spike_array[k * (n_e // 10) + j].append(
                         12 + one_cnt * (single_example_time + resting_time))  # 对于那些不该响应这个数字的，我们让它在接受图片前就激活
     one_cnt += 1
-for one_x_data in test_data: #最后加一百个作为测试的
-    label=one_x_data['output']
-    one_x_data=one_x_data['input']
-    for one_pixel_idx in range(28*28):
-        # 对于每个点给一个时间序列
-        oridata=one_x_data[one_pixel_idx]
-        cur_gap=0
-        while oridata>65:
-            spike_array[one_pixel_idx].append(15+one_cnt*(single_example_time+resting_time)+cur_gap) #起始时间+当前隔了多久
-            cur_gap+=small_gap
-            oridata-=65
-            break
-    one_cnt += 1
+# for one_x_data in test_data: #最后加一百个作为测试的
+#     label=one_x_data['output']
+#     one_x_data=one_x_data['input']
+#     for one_pixel_idx in range(28*28):
+#         # 对于每个点给一个时间序列
+#         oridata=one_x_data[one_pixel_idx]
+#         cur_gap=0
+#         while oridata>65:
+#             spike_array[one_pixel_idx].append(15+one_cnt*(single_example_time+resting_time)+cur_gap) #起始时间+当前隔了多久
+#             cur_gap+=small_gap
+#             oridata-=65
+#             break
+#     one_cnt += 1
 
 
 
@@ -419,12 +419,12 @@ for i in range(num_examples):
     correct_label=train_data[i]['output']
     train_respondlist.append({correct_label: respond_neural_list})
 
-respondlist=[]
-for i in range(len(test_data)):#最后100个作为测试例子
-    respond_neural_list=number2respond[num_examples+i]
-    correct_label=test_data[i]['output']
-    respondlist.append({correct_label: respond_neural_list})
-np.save('respondlist.npy',respondlist)
+# respondlist=[]
+# for i in range(len(test_data)):#最后100个作为测试例子
+#     respond_neural_list=number2respond[num_examples+i]
+#     correct_label=test_data[i]['output']
+#     respondlist.append({correct_label: respond_neural_list})
+# np.save('respondlist.npy',respondlist)
 np.save('train_respondlist.npy',train_respondlist)
 
 
