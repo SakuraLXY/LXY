@@ -180,7 +180,7 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 200  #  一次使用训练例子的数量
+num_examples = 600  #  一次使用训练例子的数量
 turns=0 # 这是第几次训练
 
 ending = ''
@@ -297,7 +297,7 @@ for one_x_data in train_data:
                     #     20 + one_cnt * (single_example_time + resting_time))  # 对于那些应该响应这个数字的，我们让它在接受图片输入后激活
             else:
             # label_spike_array[k * (n_e // 10) + j].append(7 + one_cnt * (single_example_time + resting_time)) # 对于那些不该响应这个数字的，我们让它在接受图片前就激活
-                if random.randint(0,100)<93:
+                if random.randint(0,100)<10:
                     label_spike_array[k * (n_e // 10) + j].append(
                         12 + one_cnt * (single_example_time + resting_time))  # 对于那些不该响应这个数字的，我们让它在接受图片前就激活
     one_cnt += 1
@@ -355,7 +355,7 @@ print('create connections between X and A ')
 # 使用STDP学习从输入神经元到兴奋性神经元的所有突触
 timing_rule = sim.SpikePairRule(tau_plus=18.0, tau_minus=18.0,  # 8,1
                                 A_plus=0.001, A_minus=0.001)  # 80,20
-weight_rule = sim.AdditiveWeightDependence(w_max=0.2, w_min=0)
+weight_rule = sim.AdditiveWeightDependence(w_max=0.05, w_min=0)
 # last_weight=np.load('weight900.npy').reshape(-1)
 # stdp = sim.STDPMechanism(timing_dependence=timing_rule,
 #                          weight_dependence=weight_rule,
@@ -364,7 +364,7 @@ weight_rule = sim.AdditiveWeightDependence(w_max=0.2, w_min=0)
 #                          )
 stdp = sim.STDPMechanism(timing_dependence=timing_rule,
                          weight_dependence=weight_rule,
-                         weight=RandomDistribution(distribution='normal_clipped', low=0.001, high=0.003, mu=0.5, sigma=0.3),
+                         weight=RandomDistribution(distribution='normal_clipped', low=0.01, high=0.02, mu=0.5, sigma=0.3),
                          delay=1.0
                          )
 connections_XeAe = sim.Projection(presynaptic_population = input_groups_Xe,
