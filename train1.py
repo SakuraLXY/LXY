@@ -355,7 +355,7 @@ print('create connections between X and A ')
 # 使用STDP学习从输入神经元到兴奋性神经元的所有突触
 timing_rule = sim.SpikePairRule(tau_plus=18.0, tau_minus=18.0,  # 8,1
                                 A_plus=0.01, A_minus=0.01)  # 80,20
-weight_rule = sim.AdditiveWeightDependence(w_max=0.1, w_min=0)
+weight_rule = sim.AdditiveWeightDependence(w_max=0.2, w_min=0)
 # last_weight=np.load('weight900.npy').reshape(-1)
 # stdp = sim.STDPMechanism(timing_dependence=timing_rule,
 #                          weight_dependence=weight_rule,
@@ -364,7 +364,7 @@ weight_rule = sim.AdditiveWeightDependence(w_max=0.1, w_min=0)
 #                          )
 stdp = sim.STDPMechanism(timing_dependence=timing_rule,
                          weight_dependence=weight_rule,
-                         weight=RandomDistribution(distribution='normal_clipped', low=0.01, high=0.02, mu=0.5, sigma=0.3),
+                         weight=RandomDistribution(distribution='normal_clipped', low=0, high=0.2, mu=0.5, sigma=0.3),
                          delay=1.0
                          )
 connections_XeAe = sim.Projection(presynaptic_population = input_groups_Xe,
