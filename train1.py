@@ -354,8 +354,8 @@ connections_AeAi = sim.Projection(
 print('create connections between X and A ')
 # 使用STDP学习从输入神经元到兴奋性神经元的所有突触
 timing_rule = sim.SpikePairRule(tau_plus=18.0, tau_minus=18.0,  # 8,1
-                                A_plus=0.001, A_minus=0.001)  # 80,20
-weight_rule = sim.AdditiveWeightDependence(w_max=0.05, w_min=0)
+                                A_plus=0.01, A_minus=0.01)  # 80,20
+weight_rule = sim.AdditiveWeightDependence(w_max=0.1, w_min=0)
 # last_weight=np.load('weight900.npy').reshape(-1)
 # stdp = sim.STDPMechanism(timing_dependence=timing_rule,
 #                          weight_dependence=weight_rule,
