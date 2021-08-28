@@ -180,7 +180,7 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-num_examples = 600  #  一次使用训练例子的数量
+num_examples = 400  #  一次使用训练例子的数量
 turns=0 # 这是第几次训练
 
 ending = ''
@@ -208,7 +208,7 @@ e_params = {
     'tau_syn_I': 2.0,  # Decay time of the inhibitory synaptic conductance in ms.
     'e_rev_E': 0.0,  # Reversal potential for excitatory input in mV
     'e_rev_I': -100.0,  # Reversal potential for inhibitory input in mV
-    'v_thresh': -12.0,  # Spike threshold in mV.
+    'v_thresh': -32.0,  # Spike threshold in mV.
     'v_reset': -65.0,  # Reset potential after a spike in mV.
     'i_offset': 0.0,  # Offset current in nA
 }
@@ -290,16 +290,16 @@ for one_x_data in train_data:
     for j in range(n_e//10):
         for k in range(10):
             if k==label:
-                if random.randint(0, 100) < 20:
+                if random.randint(0, 100) < 50:
                     label_spike_array[k * (n_e // 10) + j].append(
-                        18 + one_cnt * (single_example_time + resting_time))  # 对于那些应该响应这个数字的，我们让它在接受图片输入后激活
+                        17 + one_cnt * (single_example_time + resting_time))  # 对于那些应该响应这个数字的，我们让它在接受图片输入后激活
                     # label_spike_array[k * (n_e // 10) + j].append(
                     #     20 + one_cnt * (single_example_time + resting_time))  # 对于那些应该响应这个数字的，我们让它在接受图片输入后激活
             else:
             # label_spike_array[k * (n_e // 10) + j].append(7 + one_cnt * (single_example_time + resting_time)) # 对于那些不该响应这个数字的，我们让它在接受图片前就激活
-                if random.randint(0,100)<10:
+                if random.randint(0,100)<90:
                     label_spike_array[k * (n_e // 10) + j].append(
-                        12 + one_cnt * (single_example_time + resting_time))  # 对于那些不该响应这个数字的，我们让它在接受图片前就激活
+                        13 + one_cnt * (single_example_time + resting_time))  # 对于那些不该响应这个数字的，我们让它在接受图片前就激活
     one_cnt += 1
 # for one_x_data in test_data: #最后加一百个作为测试的
 #     label=one_x_data['output']
@@ -354,7 +354,7 @@ connections_AeAi = sim.Projection(
 print('create connections between X and A ')
 # 使用STDP学习从输入神经元到兴奋性神经元的所有突触
 timing_rule = sim.SpikePairRule(tau_plus=18.0, tau_minus=18.0,  # 8,1
-                                A_plus=0.01, A_minus=0.01)  # 80,20
+                                A_plus=0.02, A_minus=0.02)  # 80,20
 weight_rule = sim.AdditiveWeightDependence(w_max=0.2, w_min=0)
 # last_weight=np.load('weight900.npy').reshape(-1)
 # stdp = sim.STDPMechanism(timing_dependence=timing_rule,
