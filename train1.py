@@ -290,14 +290,14 @@ for one_x_data in train_data:
     for j in range(n_e//10):
         for k in range(10):
             if k==label:
-                if random.randint(0, 100) < 50:
+                if random.randint(0, 100) < 60:
                     label_spike_array[k * (n_e // 10) + j].append(
                         17 + one_cnt * (single_example_time + resting_time))  # 对于那些应该响应这个数字的，我们让它在接受图片输入后激活
                     # label_spike_array[k * (n_e // 10) + j].append(
                     #     20 + one_cnt * (single_example_time + resting_time))  # 对于那些应该响应这个数字的，我们让它在接受图片输入后激活
             else:
             # label_spike_array[k * (n_e // 10) + j].append(7 + one_cnt * (single_example_time + resting_time)) # 对于那些不该响应这个数字的，我们让它在接受图片前就激活
-                if random.randint(0,100)<90:
+                if random.randint(0,100)<10:
                     label_spike_array[k * (n_e // 10) + j].append(
                         13 + one_cnt * (single_example_time + resting_time))  # 对于那些不该响应这个数字的，我们让它在接受图片前就激活
     one_cnt += 1
@@ -364,7 +364,7 @@ weight_rule = sim.AdditiveWeightDependence(w_max=0.2, w_min=0)
 #                          )
 stdp = sim.STDPMechanism(timing_dependence=timing_rule,
                          weight_dependence=weight_rule,
-                         weight=RandomDistribution(distribution='normal_clipped', low=0, high=0.2, mu=0.5, sigma=0.3),
+                         weight=RandomDistribution(distribution='normal_clipped', low=0.02, high=0.02, mu=0.5, sigma=0.3),
                          delay=1.0
                          )
 connections_XeAe = sim.Projection(presynaptic_population = input_groups_Xe,
