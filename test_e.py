@@ -177,8 +177,9 @@ np.random.seed(0)  # 使得后续生产的随机数可预测
 data_path = './'
 
 weight_path = data_path + 'random/'
-test_examples=1000
-weight_data_name='weight900.npy' #使用的权重文件名
+num_examples = 1  #  一次使用训练例子的数量。再多就不行了
+test_examples=100
+turns=0 # 这是第几次训练
 
 ending = ''
 n_input = 784  # 输入层，即28*28
@@ -205,7 +206,7 @@ e_params = {
     'tau_syn_I': 2.0,  # Decay time of the inhibitory synaptic conductance in ms.
     'e_rev_E': 0.0,  # Reversal potential for excitatory input in mV
     'e_rev_I': -100.0,  # Reversal potential for inhibitory input in mV
-    'v_thresh': -17.0,  # Spike threshold in mV.
+    'v_thresh': -12.0,  # Spike threshold in mV.
     'v_reset': -65.0,  # Reset potential after a spike in mV.
     'i_offset': 0.0,  # Offset current in nA
 }
@@ -263,13 +264,41 @@ x_data = [training['x'][j, :, :].reshape((n_input)) for j in range(60000)]
 all_data= [{'input':x_data[j],'output':training['y'][j][0] }for j in range(60000)]
 random.seed=0
 random.shuffle(all_data)
-num_examples=1
 train_data=all_data[:num_examples]
 test_data=all_data[num_examples:num_examples+test_examples]
 # x_data = training['x'].reshape((n_input))
 spike_array =[[] for _ in range(28*28)]
+label_spike_array=[[] for _ in range(n_e)]
+gap_time= [0 for _ in range(28*28)]
+last_time= [0 for _ in range(28*28)]
 small_gap=5
 one_cnt=0
+for one_x_data in train_data:
+    label=one_x_data['output']
+    one_x_data=one_x_data['input']
+    for one_pixel_idx in range(28*28):
+        # 对于每个点给一个时间序列
+        oridata=one_x_data[one_pixel_idx]
+        cur_gap=0
+        while oridata>65:
+            spike_array[one_pixel_idx].append(15+one_cnt*(single_example_time+resting_time)+cur_gap) #起始时间+当前隔了多久
+            cur_gap+=small_gap
+            oridata-=65
+            break
+    for j in range(n_e//10):
+        for k in range(10):
+            if k==label:
+                if random.randint(0, 10) < 2:
+                    label_spike_array[k * (n_e // 10) + j].append(
+                        18 + one_cnt * (single_example_time + resting_time))  # 对于那些应该响应这个数字的，我们让它在接受图片输入后激活
+                    # label_spike_array[k * (n_e // 10) + j].append(
+                    #     20 + one_cnt * (single_example_time + resting_time))  # 对于那些应该响应这个数字的，我们让它在接受图片输入后激活
+            else:
+            # label_spike_array[k * (n_e // 10) + j].append(7 + one_cnt * (single_example_time + resting_time)) # 对于那些不该响应这个数字的，我们让它在接受图片前就激活
+                if random.randint(0,100)<93:
+                    label_spike_array[k * (n_e // 10) + j].append(
+                        12 + one_cnt * (single_example_time + resting_time))  # 对于那些不该响应这个数字的，我们让它在接受图片前就激活
+    one_cnt += 1
 for one_x_data in test_data: #最后加一百个作为测试的
     label=one_x_data['output']
     one_x_data=one_x_data['input']
@@ -279,7 +308,7 @@ for one_x_data in test_data: #最后加一百个作为测试的
         cur_gap=0
         # 每5ms随机激发一些像素点
         while oridata>20:
-            if random.randint(1,100)<60: #有60%概率搞一个激发
+            if random.randint(1,100)<80: #有60%概率搞一个激发
                 spike_array[one_pixel_idx].append(15+one_cnt*(single_example_time+resting_time)+cur_gap) #起始时间+当前隔了多久
             cur_gap+=small_gap
             oridata-=20
@@ -313,6 +342,22 @@ connections_AeAi = sim.Projection(
                                   synapse_type=sim.StaticSynapse(weight=10.4, delay=1.0),
                                   receptor_type='excitatory'
                                   )
+# Ai -> Ae 的连接
+# connect_AiAe = 17.0*(np.ones([n_e,n_e]) - np.identity(n_e))
+
+# connect_AiAe = []
+# for i in range(n_e):
+#     for j in range(n_i):
+#         if not i == j:
+#             connect_AiAe.append((i, j))
+# connections_AiAe = sim.Projection(neuron_groups_Ai,
+#                                   neuron_groups_Ae,
+#                                   connector=sim.FromListConnector(connect_AiAe),
+#                                   synapse_type=sim.StaticSynapse(weight=17, delay=1.0),
+#                                   receptor_type='inhibitory'
+#                                   )
+
+
 
 # ------------------------------------------------------------------------------
 # create input population and connections from input populations
@@ -323,15 +368,25 @@ connections_AeAi = sim.Projection(
 
 
 print('create connections between X and A ')
+# 使用STDP学习从输入神经元到兴奋性神经元的所有突触
+# stdp_initial_weights = sim.RandomDistribution(distribution='normal_clipped',low=0,high=1, mu=0.5, sigma=0.3)
+# print("Testing stdp initial weight random generator, rand value = ",str(stdp_initial_weights.next()))
 timing_rule = sim.SpikePairRule(tau_plus=18.0, tau_minus=18.0,  # 8,1
                                 A_plus=0, A_minus=0)  # 80,20
 weight_rule = sim.AdditiveWeightDependence(w_max=0.3, w_min=0)
-last_weight=np.load(weight_data_name).reshape(-1)
+
+last_weight=np.load('weight1000.npy').reshape(-1)
+
 stdp = sim.STDPMechanism(timing_dependence=timing_rule,
                          weight_dependence=weight_rule,
                          weight=last_weight,
                          delay=1.0
                          )
+# stdp = sim.STDPMechanism(timing_dependence=timing_rule,
+#                          weight_dependence=weight_rule,
+#                          weight=RandomDistribution(distribution='normal_clipped', low=0.1, high=0.2, mu=0.5, sigma=0.3),
+#                          delay=1.0
+#                          )
 connections_XeAe = sim.Projection(presynaptic_population = input_groups_Xe,
                                   postsynaptic_population=neuron_groups_Ae,
                                   connector=sim.AllToAllConnector(),
@@ -339,7 +394,11 @@ connections_XeAe = sim.Projection(presynaptic_population = input_groups_Xe,
                                   receptor_type='excitatory'
                                   )
 print('create monitors for A')
+# 峰值计数 'Ae' & 'Ai'
 neuron_groups_Ae.record('spikes')
+# neuron_groups_Ae.record(["spikes",'gsyn_exc', 'gsyn_inh','v'])
+# neuron_groups_Ai.record(["spikes",'gsyn_exc', 'gsyn_inh','v'])
+# input_groups_Xe.record('spikes')
 
 # ------------------------------------------------------------------------------
 # run the simulation and set inputs
@@ -348,15 +407,31 @@ neuron_groups_Ae.record('spikes')
 # 保存初始权重
 sim.run(1)
 initWeight = connections_XeAe.get('weight', format='array')
+# print(initWeight)
 np.save(data_path + 'initWeight' + ending, initWeight)
 
 sim.run(runtime)
 weights = connections_XeAe.get('weight', format='array')
 print('save results')
+
+# save_theta()
+# initWeight = connections_XeAe.get('weight', format='array')
+# print(initWeight)
 save_connections('1')
 
+
+
+# inp_spikes = input_groups_Xe.get_data("spikes")
+# print('&&&&&',inp_spikes.segments[0].spiketrains)
 exc_spikes = neuron_groups_Ae.get_data("spikes")
+# print('&&&&&',exc_spikes.segments[0].spiketrains)
+# inh_spikes = neuron_groups_Ai.get_data("spikes")
+# print('&&&&&',inh_spikes.segments[0].spiketrains)
+
+
+# print(outputNumbers)
 spikes = exc_spikes.segments[0].spiketrains
+# print(spikes)
 spike_counts = [{i:0 for i in range(10)} for i in range(n_e)] # spike_counts[i][j] 第i个神经元在 数字j上面的spikes数量
 recorded_map=[{}  for _ in range(n_e)]
 number2respond=[[] for _ in range(num_examples+1+len(test_data))]
@@ -367,8 +442,10 @@ for i in range(n_e):
     if i<10:
         print('$$$$$$ spike of %d'%i,list(spikes[i]))
     for j in list(spikes[i]): # 第i个神经元的spikes历史 j是时间点，时间点除以每个样本时间就是出现spike的时候是被展示了哪张数字，用了整除所以在展示时间点之后的spike都算那个展示的图片的
+#         print(0,i,int(j)%500)
+#         print(1,i,class_history[int(j)//500])
         # class_history是历史上选择展示用的数字
-        corresponding_number_idx=((int(j)-15)//(single_example_time+resting_time)) #因为是在过了15ms后才会给图片信号，在此之前如果有那就是抑制用的激活
+        corresponding_number_idx=((int(j)-15)//(single_example_time+resting_time)) #因为是在过了5ms后才会给图片信号，在此之前如果有那就是抑制用的激活
         if recorded_map[i].get(corresponding_number_idx,-1)!=-1:
             continue
         recorded_map[i][corresponding_number_idx]=1
@@ -378,24 +455,6 @@ for i in range(n_e):
         spike_counts[i][all_data[corresponding_number_idx]['output']]+=1
 
 
-labels = [0]*n_e
-number2spikecnt=[0]*10  #一个数字激发过的火花数，后面用来算概率
-for i in range(len(spike_counts)): #labels[i] 第i个神经元被分配到的标签？等于它响应最多的那个数字
-    print('spike_counts of %d'%(i),spike_counts[i])
-    labels[i] = max(spike_counts[i], key=spike_counts[i].get)
-    for j in range(10):
-        number2spikecnt[j]+=spike_counts[i][j]
-
-print("Labels")
-print(labels)
-num_labels = {i:0 for i in range(10)} #每个标签分配到的神经元数量
-for i in labels:
-    num_labels[i]+=1
-print("Number of labels")
-print(num_labels)
-
-# -----------test numbers------------
-#
 train_respondlist=[]
 for i in range(num_examples):
     respond_neural_list=number2respond[i]
@@ -408,9 +467,7 @@ for i in range(len(test_data)):#最后100个作为测试例子
     correct_label=test_data[i]['output']
     respondlist.append({correct_label: respond_neural_list})
 
-
-np.save('respondlist.npy',respondlist)
+np.save('respondlist1000.npy',respondlist)
 np.save('train_respondlist.npy',train_respondlist)
-
 
 sim.end()
