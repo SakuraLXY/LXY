@@ -375,7 +375,7 @@ timing_rule = sim.SpikePairRule(tau_plus=18.0, tau_minus=18.0,  # 8,1
                                 A_plus=0, A_minus=0)  # 80,20
 weight_rule = sim.AdditiveWeightDependence(w_max=0.3, w_min=0)
 
-last_weight=np.load('weight5000.npy').reshape(-1)################################################################################################################
+last_weight=np.load('weight4000.npy').reshape(-1)################################################################################################################
 
 stdp = sim.STDPMechanism(timing_dependence=timing_rule,
                          weight_dependence=weight_rule,
@@ -467,7 +467,7 @@ for i in range(len(test_data)):#最后100个作为测试例子
     correct_label=test_data[i]['output']
     respondlist.append({correct_label: respond_neural_list})
 
-np.save('respondlist5000.npy',respondlist)
+np.save('respondlist4000.npy',respondlist)
 np.save('train_respondlist.npy',train_respondlist)
 
 sim.end()
