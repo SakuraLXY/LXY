@@ -178,7 +178,7 @@ data_path = './'
 
 weight_path = data_path + 'random/'
 num_examples = 1  #  一次使用训练例子的数量。再多就不行了
-test_examples=100
+test_examples=1000
 turns=0 # 这是第几次训练
 
 ending = ''
@@ -375,7 +375,7 @@ timing_rule = sim.SpikePairRule(tau_plus=18.0, tau_minus=18.0,  # 8,1
                                 A_plus=0, A_minus=0)  # 80,20
 weight_rule = sim.AdditiveWeightDependence(w_max=0.3, w_min=0)
 
-last_weight=np.load('weight1000.npy').reshape(-1)
+last_weight=np.load('weight1000.npy').reshape(-1)################################################################################################################
 
 stdp = sim.STDPMechanism(timing_dependence=timing_rule,
                          weight_dependence=weight_rule,
