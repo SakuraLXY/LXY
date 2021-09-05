@@ -178,7 +178,7 @@ data_path = './'
 
 weight_path = data_path + 'random/'
 test_examples=1000
-weight_data_name='weight1500.npy' #使用的权重文件名
+weight_data_name='weight900.npy' #使用的权重文件名
 
 ending = ''
 n_input = 784  # 输入层，即28*28
@@ -409,7 +409,7 @@ for i in range(len(test_data)):#最后100个作为测试例子
     respondlist.append({correct_label: respond_neural_list})
 
 
-np.save('respondlist1500.npy',respondlist)
+np.save('respondlist.npy',respondlist)
 np.save('train_respondlist.npy',train_respondlist)
 
 
